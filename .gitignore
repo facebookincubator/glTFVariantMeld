@@ -1,0 +1,8 @@
+# Rust build output
+/native/target/
+
+# Backup files from rustfmt
+/native/**/*.rs.bk
+
+/**/*~
+.DS_Store
