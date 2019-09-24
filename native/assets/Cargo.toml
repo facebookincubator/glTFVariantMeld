@@ -1,0 +1,10 @@
+[package]
+name = "assets"
+version = "0.1.0"
+authors = [
+	"Jeremy Cytryn",
+	"Renee Rashid",
+	"Susie Su",
+	"Pär Winzell",
+]
+edition = "2018"
