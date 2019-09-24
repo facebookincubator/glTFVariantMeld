@@ -1,0 +1,3 @@
+# glTFVariantMeld
+
+Briefly empty.
