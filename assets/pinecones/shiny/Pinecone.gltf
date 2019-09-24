@@ -1,0 +1,175 @@
+{
+  "asset": {
+    "generator": "FBX2glTF",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "buffers": [
+    {
+      "uri": "Pinecone_data.bin",
+      "byteLength": 69360
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 5760,
+      "byteOffset": 0,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 15900,
+      "byteOffset": 5760,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 15900,
+      "byteOffset": 21660,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 21200,
+      "byteOffset": 37560,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 10600,
+      "byteOffset": 58760,
+      "target": 34962
+    }
+  ],
+  "scenes": [
+    {
+      "name": "Root Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "accessors": [
+    {
+      "componentType": 5123,
+      "type": "SCALAR",
+      "count": 2880,
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "count": 1325,
+      "bufferView": 1,
+      "byteOffset": 0,
+      "min": [
+        -45.0671310424805,
+        0.0485343933105469,
+        -45.0665054321289
+      ],
+      "max": [
+        45.0674324035645,
+        99.8729095458984,
+        45.0677680969238
+      ]
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "count": 1325,
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC4",
+      "count": 1325,
+      "bufferView": 3,
+      "byteOffset": 0
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC2",
+      "count": 1325,
+      "bufferView": 4,
+      "byteOffset": 0
+    }
+  ],
+  "samplers": [
+    {}
+  ],
+  "materials": [
+    {
+      "name": "lambert1",
+      "alphaMode": "OPAQUE",
+      "pbrMetallicRoughness": {
+        "metallicFactor": 0.8,
+        "roughnessFactor": 0.2
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Pinecone",
+      "primitives": [
+        {
+          "material": 0,
+          "mode": 4,
+          "attributes": {
+            "COLOR_0": 3,
+            "NORMAL": 2,
+            "POSITION": 1,
+            "TEXCOORD_0": 4
+          },
+          "indices": 0
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "RootNode",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "children": [
+        1
+      ]
+    },
+    {
+      "name": "Pinecone",
+      "translation": [
+        0,
+        1.73472347597681e-15,
+        1.89326617253043e-27
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "mesh": 0
+    }
+  ]
+}
