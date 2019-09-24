@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "serve": "webpack-dev-server"
+  },
+  "dependencies": {
+    "@types/node": "^12.7.7",
+    "@zellski/variationator": "file:../wasmpkg"
+  },
+  "devDependencies": {
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.6.2",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.1.2"
+  }
+}
