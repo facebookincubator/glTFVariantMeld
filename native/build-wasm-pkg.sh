@@ -6,4 +6,4 @@
 SCRIPT_DIR=`dirname $BASH_SOURCE`
 cd "${SCRIPT_DIR}"
 
-wasm-pack build -d ${SCRIPT_DIR}/web/wasmpkg/
+wasm-pack build -d ${SCRIPT_DIR}/../web/wasmpkg/

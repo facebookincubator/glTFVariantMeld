@@ -41,7 +41,7 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
         primitive.extras = None;
         return Ok(());
     }
-    // invert the mapping index->tag to a tag->index_set one
+    // invert the mapping tag->ix to a ix->set-of-tags one
     let mut ix_to_tags = HashMap::new();
     for (tag, &ix) in tag_to_ix {
         ix_to_tags

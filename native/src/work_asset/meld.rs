@@ -36,6 +36,7 @@ impl<'a> WorkAsset {
                     let base_primitive = &base_primitives[primitive_ix];
                     let other_primitive = &other_primitives[primitive_ix];
 
+                    // TODO: I think unwrap() is incorrect here – material is not mandated
                     let base_material_key =
                         base.material_keys[base_primitive.material.unwrap().value()].to_owned();
                     let other_material_key =

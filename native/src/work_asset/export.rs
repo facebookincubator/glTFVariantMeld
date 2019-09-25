@@ -74,15 +74,36 @@ impl<'a> WorkAsset {
                 // prepare to build the mapping of tag->material_ix
                 let mut tag_to_ix = HashMap::new();
 
+                // TODO: the presence of a default material is more important than suggested here;
+                // is the implied default_tag -> default_material mapping also present in the
+                // variant map? if so we should not count. Is the default_mag present in the
+                // mapping, but points to a DIFFERENT material? is that an error or does the
+                // map override? write out the spec, that might help.
+                //
+                // this probably also currently double-counts the default material if the
+                // mapping also exists in the variant_map.
                 if let Some(default_material_ix) = primitive.material {
                     let is_variational = variant_mapping.len() > 1;
                     image_sizer.accumulate_material(default_material_ix.value(), is_variational);
-                }
+                };
 
                 // loop over the (tag, key) entries in that mapping...
                 for (tag, material_key) in variant_mapping.iter() {
                     // map the material key to a glTF material index...
                     if let Some(material_ix) = self.material_ix(material_key) {
+                        if *tag == self.default_tag {
+                            // there shouldn't be a mapping for the default tag; let's ignore it
+                            // as long as it points to the right place
+                            if let Some(default_material_ix) = primitive.material {
+                                if default_material_ix.value() == material_ix {
+                                    continue;
+                                }
+                            }
+                            return Err(format!(
+                                "Huh? Variant map entry {} for default tag {} mismatch.",
+                                material_ix, self.default_tag
+                            ));
+                        }
                         // place it into the tag->material_ix mapping
                         tag_to_ix.insert(tag.to_owned(), material_ix);
 
