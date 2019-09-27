@@ -111,11 +111,16 @@ impl<'a> WorkAsset {
 
                 // now handle the primitive's default material, if any
                 if let Some(default_material_ix) = primitive.material {
-                    let is_variational = variant_mapping.len() > 1;
                     let default_material_ix = default_material_ix.value();
-                    tag_to_ix.insert(self.default_tag.clone(), default_material_ix);
+                    let is_variational = !tag_to_ix.is_empty();
+
                     image_sizer.accumulate_material(default_material_ix, is_variational);
                     image_sizer.accumulate_tagged_material(default_material_ix, &self.default_tag);
+
+                    if is_variational {
+                        // only map the default tag if there's other tags already in the mapping
+                        tag_to_ix.insert(self.default_tag.clone(), default_material_ix);
+                    }
                 };
 
                 // finally write out the tag->material_ix mapping to glTF JSON

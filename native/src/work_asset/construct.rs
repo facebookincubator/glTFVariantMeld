@@ -2,10 +2,8 @@
 //
 
 //! Code to parse & index a glTF asset into `WorkAsset` format.
-//!
-//! TODO: Ensure mesh keys are unique.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -113,6 +111,18 @@ impl WorkAsset {
         asset.texture_keys = asset.build_meld_keys(&asset.parse.textures)?;
         asset.material_keys = asset.build_meld_keys(&asset.parse.materials)?;
         asset.mesh_keys = asset.build_meld_keys(&asset.parse.meshes)?;
+
+        let mut seen = HashSet::new();
+        let mut dups = HashSet::new();
+        for mesh_key in &asset.mesh_keys {
+            if seen.contains(mesh_key) {
+                dups.insert(mesh_key);
+            }
+            seen.insert(mesh_key);
+        }
+        if !dups.is_empty() {
+            return Err(format!("Aii, non-unique meld keys: {:#?}", dups));
+        }
 
         let mesh_primitive_variants = asset.map_variants()?;
         asset.mesh_primitive_variants = mesh_primitive_variants;

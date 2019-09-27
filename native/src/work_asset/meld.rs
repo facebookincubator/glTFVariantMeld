@@ -31,24 +31,27 @@ impl<'a> WorkAsset {
 
                 for primitive_ix in 0..other_primitives.len() {
                     let mut base_map = base.variant_mapping(base_mesh_ix, primitive_ix).clone();
-                    let mut other_map = other.variant_mapping(other_mesh_ix, primitive_ix).clone();
-
                     let base_primitive = &base_primitives[primitive_ix];
+                    if let Some(base_material) = base_primitive.material {
+                        if !base_map.contains_key(&base.default_tag) {
+                            base_map.insert(
+                                base.default_tag.clone(),
+                                base.material_keys[base_material.value()].to_owned(),
+                            );
+                        }
+                    }
+
+                    let mut other_map = other.variant_mapping(other_mesh_ix, primitive_ix).clone();
                     let other_primitive = &other_primitives[primitive_ix];
-
-                    // TODO: I think unwrap() is incorrect here – material is not mandated
-                    let base_material_key =
-                        base.material_keys[base_primitive.material.unwrap().value()].to_owned();
-                    let other_material_key =
-                        other.material_keys[other_primitive.material.unwrap().value()].to_owned();
-
-                    if !base_map.contains_key(&base.default_tag) {
-                        base_map.insert(base.default_tag.clone(), base_material_key);
+                    if let Some(other_material) = other_primitive.material {
+                        if !other_map.contains_key(&other.default_tag) {
+                            other_map.insert(
+                                other.default_tag.clone(),
+                                other.material_keys[other_material.value()].to_owned(),
+                            );
+                        }
                     }
 
-                    if !other_map.contains_key(&other.default_tag) {
-                        other_map.insert(other.default_tag.clone(), other_material_key);
-                    }
                     let mut result_map = base_map.clone();
 
                     for other_tag in other_map.keys() {
