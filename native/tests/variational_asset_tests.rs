@@ -4,8 +4,6 @@
 extern crate assets;
 extern crate variationator;
 
-use std::fs;
-
 use spectral::prelude::*;
 
 use variationator::{Tag, VariationalAsset, WorkAsset};
@@ -14,10 +12,13 @@ use assets::*;
 
 #[test]
 fn test_parse_simple_variational() {
-    let asset_result = VariationalAsset::from_file(
-        ASSET_PINECONE_VARIATIONAL(),
-        Some(&Tag::from("tag_default")),
+    let (tag_default, tag_1, tag_2) = (
+        Tag::from("tag_default"),
+        Tag::from("tag_1"),
+        Tag::from("tag_2"),
     );
+    let asset_result =
+        VariationalAsset::from_file(ASSET_PINECONE_VARIATIONAL(), Some(&tag_default));
     assert_that!(asset_result).is_ok();
     let asset = asset_result.unwrap();
     let asset = WorkAsset::from_slice(asset.glb(), None, None)
@@ -32,11 +33,6 @@ fn test_parse_simple_variational() {
     let extracted_map = variationator::extension::extract_variant_map(&primitive)
         .expect("Failed to extract variant map from mesh primitive.");
 
-    assert_that!(extracted_map).has_length(2);
-    assert_that!(extracted_map)
-        .contains_key(Tag::from("tag_1"))
-        .is_equal_to(0);
-    assert_that!(extracted_map)
-        .contains_key(Tag::from("tag_2"))
-        .is_equal_to(0);
+    assert_that!(extracted_map).has_length(3);
+    assert_that!(extracted_map.keys()).contains_all_of(&vec![&tag_default, &tag_1, &tag_2]);
 }
