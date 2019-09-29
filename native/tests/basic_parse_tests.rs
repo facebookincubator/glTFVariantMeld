@@ -2,7 +2,7 @@
 //
 
 extern crate assets;
-extern crate variationator;
+extern crate gltf_variant_meld;
 
 use std::iter::FromIterator;
 
@@ -12,7 +12,7 @@ use assets::*;
 
 use gltf::Gltf;
 
-use variationator::{Tag, VariationalAsset};
+use gltf_variant_meld::{Tag, VariationalAsset};
 
 #[test]
 fn test_tiny_parse() {

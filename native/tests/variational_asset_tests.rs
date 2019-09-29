@@ -2,11 +2,11 @@
 //
 
 extern crate assets;
-extern crate variationator;
+extern crate gltf_variant_meld;
 
 use spectral::prelude::*;
 
-use variationator::{Tag, VariationalAsset, WorkAsset};
+use gltf_variant_meld::{Tag, VariationalAsset, WorkAsset};
 
 use assets::*;
 
@@ -30,7 +30,7 @@ fn test_parse_simple_variational() {
         .primitives
         .get(0)
         .expect("No primitives in first mesh!");
-    let extracted_map = variationator::extension::extract_variant_map(&primitive)
+    let extracted_map = gltf_variant_meld::extension::extract_variant_map(&primitive)
         .expect("Failed to extract variant map from mesh primitive.");
 
     assert_that!(extracted_map).has_length(3);

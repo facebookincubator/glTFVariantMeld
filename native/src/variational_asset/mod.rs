@@ -27,7 +27,7 @@ pub mod wasm;
 /// ```
 ///   extern crate assets;
 ///   use std::path::Path;
-///   use variationator::{Tag, VariationalAsset};
+///   use gltf_variant_meld::{Tag, VariationalAsset};
 ///
 ///   let (matte_tag, shiny_tag) = (Tag::from("matte"), Tag::from("shiny"));
 ///   let pinecone_matte = VariationalAsset::from_file(

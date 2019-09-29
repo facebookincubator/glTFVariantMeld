@@ -2,13 +2,13 @@
 //
 
 extern crate assets;
-extern crate variationator;
+extern crate gltf_variant_meld;
 
 use spectral::prelude::*;
 
 use assets::*;
 
-use variationator::{Tag, VariationalAsset};
+use gltf_variant_meld::{Tag, VariationalAsset};
 
 #[test]
 fn test_pinecone_meld() {

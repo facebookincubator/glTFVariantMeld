@@ -66,22 +66,22 @@ impl WorkAsset {
     /// Constructs a `WorkAsset` given a JSON `Root`, a byte blob, default tag & file base.
     ///
     /// First, any filesystem references within the glTF are converted to binary references, by
-    /// resolving paths, reading files, and appending them to the blob & as `BufferView` objects
-    /// in the JSON. After this step, the asset is entirely self-contained, and the `file_base`
+    /// resolving paths, reading files, and appending them to the blob & as `BufferView` objects in
+    /// the JSON. After this step, the asset is entirely self-contained, and the `file_base`
     /// argument is no longer used.
     ///
     /// Next, we validate/retrieve any default tag embedded using the `FB_material_variants`
-    /// extension. This tag must match the `default_tag` provided as argument, if any, and if
-    /// none was provided it must exist in the asset. This ensure `WorkAsset.default_tag` always
-    /// exists and makes sense.
+    /// extension. This tag must match the `default_tag` provided as argument, if any, and if none
+    /// was provided it must exist in the asset. This ensure `WorkAsset.default_tag` always exists
+    /// and makes sense.
     ///
     /// Then, we construct `MeldKey` strings for every glTF object we track – `Image`, `Sampler`,
-    /// `Texture`, `Material` and `Mesh`. (TODO: We will need to add `Primitive` here soon.)
-    /// Please consult the `::meld_keys` module for details on meld keys.
+    /// `Texture`, `Material` and `Mesh`. Please consult the `::meld_keys` module for details on
+    /// meld keys.
     ///
-    /// Finally, each mesh and mesh primitive is inspected, and any `FB_material_variants` data
-    /// is parsed and converted to a Tag->MeldKey mapping, filling in `mesh_primitive_variants`
-    /// and completing the `WorkAsset` construction.
+    /// Finally, each mesh and mesh primitive is inspected, and any `FB_material_variants` data is
+    /// parsed and converted to a Tag->MeldKey mapping, filling in `mesh_primitive_variants` and
+    /// completing the `WorkAsset` construction.
     pub fn new(
         mut parse: Root,
         mut blob: Vec<u8>,

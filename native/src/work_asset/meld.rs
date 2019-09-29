@@ -42,6 +42,9 @@ impl<'a> WorkAsset {
                     }
 
                     let mut other_map = other.variant_mapping(other_mesh_ix, primitive_ix).clone();
+                    // NOTE[TODO]: We should look primitives up per key, just as we do with all
+                    // other glTF objects, but here suddenly we assume that meshes between two
+                    // assets have precisely the same vectors of primitives in the same order.
                     let other_primitive = &other_primitives[primitive_ix];
                     if let Some(other_material) = other_primitive.material {
                         if !other_map.contains_key(&other.default_tag) {
