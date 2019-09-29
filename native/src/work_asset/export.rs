@@ -25,14 +25,14 @@ impl<'a> WorkAsset {
     ///   and wherever there is a non-empty variational Tag->Material mapping, convert that to
     ///   `FB_material_variants` form and write it into the mesh primitive's JSON.
     ///
-    /// Next, we generate the metadata section. TODO: In-line document this.
+    /// Next, we count up all the metadata.
     ///
     /// Finally, the binary glTF (GLB) blob is generated, by serialising the glTF JSON into
     /// text form, and merging it with the binary blob (see `::crate::glb` for details.)
     pub fn export(&self) -> Result<VariationalAsset> {
         let (parse, blob, metadata) = self.prepare_for_export()?;
         let default_tag = self.default_tag.clone();
-        let glb = self.build_glb_for_export(parse, blob)?;
+        let glb = self.build_glb_for_export(parse, blob.as_slice())?;
 
         Ok(VariationalAsset {
             glb,
@@ -128,14 +128,18 @@ impl<'a> WorkAsset {
             }
         }
 
+        // ask metadata sizer to count up all the totals
         let (total_image_size, variational_image_size, per_tag_image_size) = image_sizer.count()?;
+        // use it to create an authoritative set of all variational tags
         let tags: HashSet<Tag> = per_tag_image_size.keys().cloned().collect();
 
+        // use it also to create the Tag->AssetSize mapping
         let per_tag_sizes: HashMap<Tag, AssetSizes> = tags
             .iter()
             .map(|tag| (tag.to_owned(), AssetSizes::new(per_tag_image_size[tag])))
             .collect();
 
+        // finally construct & return the Metadata structure
         Ok(Metadata {
             tags,
             total_sizes: AssetSizes {
@@ -148,7 +152,8 @@ impl<'a> WorkAsset {
         })
     }
 
-    fn build_glb_for_export(&self, export_parse: Root, export_blob: Vec<u8>) -> Result<Vec<u8>> {
+    // given a `Root` and a binary blob, create an actual GLB file
+    fn build_glb_for_export(&self, export_parse: Root, export_blob: &[u8]) -> Result<Vec<u8>> {
         let json = export_parse.to_string_pretty();
         let json = json
             .map(|s| s.into_bytes())
@@ -156,7 +161,7 @@ impl<'a> WorkAsset {
 
         let json_chunk = GlbChunk::JSON(&json);
         let bin_chunk = if !export_blob.is_empty() {
-            Some(GlbChunk::BIN(export_blob.as_slice()))
+            Some(GlbChunk::BIN(export_blob))
         } else {
             None
         };
