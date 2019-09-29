@@ -20,9 +20,10 @@
 //! perhaps digital content creation tools will include ways to export variational assets natively.
 //! Until that day, this is how we're doing it.
 //!
-//! In this prerelease version, the tool produces files with the vendor extension [TODO: link](
-//! `FB_material_variants`). We are hopeful that the glTF community will find speedy consensus
-//! around a fully ratified extension, e.g. `KHR_material_variants`.
+//! In this prerelease version, the tool produces files with the vendor extension
+//! [`FB_material_variants`](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md).
+//! We are hopeful that the glTF community will find speedy consensus around a fully
+//! ratified extension, e.g. `KHR_material_variants`.
 //!
 //! At present, we offer a simple command line interface. Our aspirational roadmap includes the
 //! development of a web app which would leverage WebAssembly to run entirely in the browser.

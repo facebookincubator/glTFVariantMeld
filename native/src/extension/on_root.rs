@@ -21,7 +21,9 @@ pub struct FBMaterialVariantRootExtension {
 
 /// Write the given `default_tag` into the JSON `Root` in `FB_material_variants` form.
 ///
-/// TODO: Link the `FB_material_variants` spec here.
+/// Please see [the `FB_material_variants`
+/// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
+/// for further details.
 pub fn set_extension_tag(root: &mut Root, default_tag: &Tag) -> Result<()> {
     let new_extras = FBMaterialVariantRootExtras {
         FB_material_variants: Some(FBMaterialVariantRootExtension {
@@ -43,6 +45,10 @@ pub fn set_extension_tag(root: &mut Root, default_tag: &Tag) -> Result<()> {
 }
 
 /// Parses and returns the default key in any `FB_material_variants` extension on the JSON `Root`.
+///
+/// Please see [the `FB_material_variants`
+/// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
+/// for further details.
 pub fn get_validated_extension_tag(root: &Root, default_tag: Option<&Tag>) -> Result<Tag> {
     let extension_tag = get_tag_from_extension(root)?;
     match default_tag {

@@ -1,7 +1,9 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 //
 
-//! Implementation of our `FB_variant_mapping` extension.
+//! Implementation of our
+//! [`FB_variant_mapping`](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
+//! extension.
 //!
 //! We're specifically concerned with reading and writing values that are meaningful from
 //! the point of view of i.e. `WorkAsset` into a glTF format, and especially the abstraction

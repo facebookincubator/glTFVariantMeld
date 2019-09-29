@@ -35,7 +35,9 @@ pub struct FBMaterialVariantPrimitiveEntry {
 ///
 /// This method guarantees a deterministic ordering of the output.
 ///
-/// TODO: Link the `FB_material_variants` spec here.
+/// Please see [the `FB_material_variants`
+/// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
+/// for further details.
 pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usize>) -> Result<()> {
     if tag_to_ix.is_empty() {
         primitive.extras = None;
@@ -83,6 +85,10 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
 }
 
 /// Parses and returns the `FB_material_variants` data on a primitive, if any.
+///
+/// Please see [the `FB_material_variants`
+/// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
+/// for further details
 pub fn extract_variant_map(primitive: &Primitive) -> Result<HashMap<Tag, usize>> {
     if let Some(boxed) = &primitive.extras {
         let json_string = &boxed.to_string();
