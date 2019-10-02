@@ -1,0 +1,53 @@
+[package]
+name = "gltf_variant_meld"
+version = "0.1.0"
+description = "A somewhat mysterious work in progress."
+authors = [
+	"Pär Winzell <zell@fb.com>",
+	"Renee Rashid",
+	"Susie Su",
+	"Jeremy Cytryn",
+]
+repository = "https://github.com/facebookincubator/glTFVariantMeld/"
+license = "MIT"
+edition = "2018"
+publish = false
+
+[workspace]
+
+[profile.release]
+lto = true
+opt-level = 's'
+
+[lib]
+name="gltf_variant_meld"
+crate-type = ["lib", "cdylib"]
+
+[dependencies.assets]
+path = "./assets"
+
+[dependencies.spectral]
+version = "0.6"
+default-features=false
+
+[dependencies.wasm-bindgen]
+version = "0.2"
+
+[dependencies.gltf]
+# We need something more bleeding-edge than a release, yet don't want to subscribe to trunk.
+git = "https://github.com/gltf-rs/gltf"
+rev = "e1843180f416af977f2ad706c0130ae68cebcbd6"
+features = ["extras", "names"]
+
+[dependencies.serde]
+version = "1.0"
+
+[dependencies.serde_derive]
+version = "1.0"
+
+[dependencies.serde_json]
+version = "1.0"
+features = ["raw_value"]
+
+[dependencies.sha1]
+version = "0.6"
