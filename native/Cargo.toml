@@ -1,23 +1,15 @@
 [package]
 name = "gltf_variant_meld"
 version = "0.1.0"
-description = "A somewhat mysterious work in progress."
+description = "Meld multiple asset variants into one, using extended glTF."
 authors = [
 	"Pär Winzell <zell@fb.com>",
 	"Renee Rashid",
-	"Susie Su",
-	"Jeremy Cytryn",
 ]
 repository = "https://github.com/facebookincubator/glTFVariantMeld/"
 license = "MIT"
 edition = "2018"
 publish = false
-
-[workspace]
-
-[profile.release]
-lto = true
-opt-level = 's'
 
 [lib]
 name="gltf_variant_meld"
@@ -38,9 +30,6 @@ version = "^0.13"
 git = "https://github.com/zellski/gltf-rs"
 branch = "zell/extensions-support"
 features = ["extras", "names"]
-
-# [patch."https://github.com/zellski/gltf-rs"]
-# gltf = { path = "../../../gltf-repo/fork/" }
 
 [dependencies.serde]
 version = "^1.0"

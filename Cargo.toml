@@ -1,0 +1,7 @@
+[workspace]
+
+members = [ "native", ]
+
+[profile.release]
+lto = true
+opt-level = 's'
