@@ -1,12 +1,10 @@
 [package]
 name = "gltf_variant_meld"
 version = "0.1.0"
-description = "A somewhat mysterious work in progress."
+description = "Meld multiple asset variants into one, using extended glTF."
 authors = [
 	"Pär Winzell <zell@fb.com>",
 	"Renee Rashid",
-	"Susie Su",
-	"Jeremy Cytryn",
 ]
 repository = "https://github.com/facebookincubator/glTFVariantMeld/"
 license = "MIT"
@@ -28,9 +26,7 @@ default-features=false
 version = "^0.2"
 
 [dependencies.gltf]
-# We need something more bleeding-edge than a release, yet don't want to subscribe to trunk.
-git = "https://github.com/gltf-rs/gltf"
-rev = "e1843180f416af977f2ad706c0130ae68cebcbd6"
+git = "https://github.com/zellski/gltf-rs"
 features = ["extras", "names"]
 
 [dependencies.serde]
