@@ -13,12 +13,6 @@ license = "MIT"
 edition = "2018"
 publish = false
 
-[workspace]
-
-[profile.release]
-lto = true
-opt-level = 's'
-
 [lib]
 name="gltf_variant_meld"
 crate-type = ["lib", "cdylib"]
@@ -27,11 +21,11 @@ crate-type = ["lib", "cdylib"]
 path = "./assets"
 
 [dependencies.spectral]
-version = "0.6"
+version = "^0.6"
 default-features=false
 
 [dependencies.wasm-bindgen]
-version = "0.2"
+version = "^0.2"
 
 [dependencies.gltf]
 # We need something more bleeding-edge than a release, yet don't want to subscribe to trunk.
@@ -40,14 +34,14 @@ rev = "e1843180f416af977f2ad706c0130ae68cebcbd6"
 features = ["extras", "names"]
 
 [dependencies.serde]
-version = "1.0"
+version = "^1.0"
 
 [dependencies.serde_derive]
-version = "1.0"
+version = "^1.0"
 
 [dependencies.serde_json]
-version = "1.0"
+version = "^1.0"
 features = ["raw_value"]
 
 [dependencies.sha1]
-version = "0.6"
+version = "^0.6"
