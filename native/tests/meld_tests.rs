@@ -99,5 +99,5 @@ fn test_teapot_meld() {
     test_tag(&melded, &green_pink_silver, 337020);
     test_tag(&melded, &green_pink_bronze, 337020);
 
-    std::fs::write("/tmp/teapots-melded.glb", melded.glb()).expect("Couldn't write file!");
+    std::fs::write("teapots-melded.glb", melded.glb()).expect("Couldn't write file!");
 }

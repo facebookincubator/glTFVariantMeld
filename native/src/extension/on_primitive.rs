@@ -34,7 +34,9 @@ pub struct FBMaterialVariantPrimitiveEntry {
 /// for further details.
 pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usize>) -> Result<()> {
     if tag_to_ix.is_empty() {
-        primitive.extensions.others.remove(FB_MATERIAL_VARIANTS);
+        if let Some(extensions) = &mut primitive.extensions {
+            extensions.others.remove(FB_MATERIAL_VARIANTS);
+        }
         return Ok(());
     }
     // invert the mapping tag->ix to a ix->set-of-tags one
@@ -76,6 +78,7 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
     // and done
     primitive
         .extensions
+        .get_or_insert(Default::default())
         .others
         .insert(FB_MATERIAL_VARIANTS.to_owned(), value);
     Ok(())
@@ -87,27 +90,28 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
 /// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
 /// for further details
 pub fn extract_variant_map(primitive: &Primitive) -> Result<HashMap<Tag, usize>> {
-    if let Some(boxed) = &primitive.extensions.others.get(FB_MATERIAL_VARIANTS) {
-        let json_string = &boxed.to_string();
-        let parse: serde_json::Result<FBMaterialVariantPrimitiveExtension> =
-            serde_json::from_str(json_string);
-        match parse {
-            Ok(parse) => {
-                let mut result = HashMap::new();
-                for entry in parse.mapping {
-                    for tag in entry.tags {
-                        result.insert(tag, entry.material as usize);
+    if let Some(extensions) = &primitive.extensions {
+        if let Some(boxed) = extensions.others.get(FB_MATERIAL_VARIANTS) {
+            let json_string = &boxed.to_string();
+            let parse: serde_json::Result<FBMaterialVariantPrimitiveExtension> =
+                serde_json::from_str(json_string);
+            return match parse {
+                Ok(parse) => {
+                    let mut result = HashMap::new();
+                    for entry in parse.mapping {
+                        for tag in entry.tags {
+                            result.insert(tag, entry.material as usize);
+                        }
                     }
+                    Ok(result)
                 }
-                Ok(result)
-            }
-            Err(e) => Err(format!(
-                "Bad JSON in FB_material_variants extension: {}; json = {}",
-                e.to_string(),
-                json_string,
-            )),
+                Err(e) => Err(format!(
+                    "Bad JSON in FB_material_variants extension: {}; json = {}",
+                    e.to_string(),
+                    json_string,
+                )),
+            };
         }
-    } else {
-        Ok(HashMap::new())
     }
+    Ok(HashMap::new())
 }

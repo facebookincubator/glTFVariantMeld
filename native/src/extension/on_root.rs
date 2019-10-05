@@ -23,7 +23,7 @@ pub fn set_extension_tag(root: &mut Root, default_tag: &Tag) -> Result<()> {
         default_tag: default_tag.to_owned(),
     };
 
-    let value = serde_json::to_string_pretty(&extension)
+    let value = serde_json::to_string(&extension)
         .and_then(|s| serde_json::from_str(&s))
         .map_err(|e| {
             format!(
@@ -33,6 +33,7 @@ pub fn set_extension_tag(root: &mut Root, default_tag: &Tag) -> Result<()> {
         })?;
 
     root.extensions
+        .get_or_insert(Default::default())
         .others
         .insert(FB_MATERIAL_VARIANTS.to_owned(), value);
     Ok(())
@@ -77,27 +78,28 @@ fn get_tag_from_extension(root: &Root) -> Result<Option<Tag>> {
 }
 
 fn get_root_extension(root: &Root) -> Result<Option<FBMaterialVariantRootExtension>> {
-    if let Some(ref boxed) = &root.extensions.others.get(FB_MATERIAL_VARIANTS) {
-        let json_string = boxed.to_string();
-        let parse: serde_json::Result<FBMaterialVariantRootExtension> =
-            serde_json::from_str(&json_string);
-        match parse {
-            Ok(parse) => {
-                if parse.default_tag != "" {
-                    Ok(Some(parse))
-                } else {
-                    Err(format!(
-                        "Missing default_tag in FB_material_variants root extension."
-                    ))
+    if let Some(extensions) = &root.extensions {
+        if let Some(ref boxed) = extensions.others.get(FB_MATERIAL_VARIANTS) {
+            let json_string = boxed.to_string();
+            let parse: serde_json::Result<FBMaterialVariantRootExtension> =
+                serde_json::from_str(&json_string);
+            return match parse {
+                Ok(parse) => {
+                    if parse.default_tag != "" {
+                        Ok(Some(parse))
+                    } else {
+                        Err(format!(
+                            "Missing default_tag in FB_material_variants root extension."
+                        ))
+                    }
                 }
-            }
-            Err(e) => Err(format!(
-                "Bad JSON in FB_material_variants extension: {}; json = {}",
-                e.to_string(),
-                json_string,
-            )),
+                Err(e) => Err(format!(
+                    "Bad JSON in FB_material_variants extension: {}; json = {}",
+                    e.to_string(),
+                    json_string,
+                )),
+            };
         }
-    } else {
-        Ok(None)
     }
+    Ok(None)
 }

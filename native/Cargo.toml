@@ -36,10 +36,11 @@ version = "^0.2"
 [dependencies.gltf]
 version = "^0.13"
 git = "https://github.com/zellski/gltf-rs"
+branch = "zell/extensions-support"
 features = ["extras", "names"]
 
-[patch."https://github.com/zellski/gltf-rs"]
-gltf = { path = "../../../gltf-repo/fork/" }
+# [patch."https://github.com/zellski/gltf-rs"]
+# gltf = { path = "../../../gltf-repo/fork/" }
 
 [dependencies.serde]
 version = "^1.0"
