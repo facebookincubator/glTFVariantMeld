@@ -26,8 +26,6 @@ fn test_tiny_parse() {
     let asset = VariationalAsset::from_slice(json.as_bytes(), Some(&Tag::from("tag")), None)
         .expect("glTF parse failure");
 
-    std::fs::write("tiny-parse.glb", asset.glb()).expect("Couldn't write file!");
-
     let asset = Gltf::from_slice(asset.glb())
         .or_else(|e| Err(e.to_string()))
         .expect("glTF re-parse failure");
