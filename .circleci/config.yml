@@ -7,18 +7,15 @@ jobs:
       - image: circleci/rust:buster
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v4-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
       - run:
           name: Update Rust
           command: rustup update
       - run:
           name: Version information
           command: rustc --version; cargo --version; rustup --version
-      - run:
-          name: Calculate dependencies
-          command: cargo generate-lockfile
-      - restore_cache:
-          keys:
-            - v4-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
       - run:
           name: Build all targets
           command: cargo build --all --all-targets
