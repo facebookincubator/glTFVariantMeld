@@ -28,7 +28,7 @@ version = "^0.2"
 [dependencies.gltf]
 version = "^0.13"
 git = "https://github.com/zellski/gltf-rs"
-branch = "zell/extensions-support"
+branch = "for-gltf-variant-meld"
 features = ["extras", "names"]
 
 [dependencies.serde]
