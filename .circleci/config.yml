@@ -9,6 +9,7 @@ jobs:
       - checkout
       - run:
           name: Update Rust
+          command: rustup update
       - run:
           name: Version information
           command: rustc --version; cargo --version; rustup --version
