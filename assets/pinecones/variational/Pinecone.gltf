@@ -3,6 +3,9 @@
     "generator": "FBX2glTF",
     "version": "2.0"
   },
+  "extensionsUsed": [
+    "FB_material_variants"
+  ],
   "scene": 0,
   "buffers": [
     {
@@ -124,7 +127,7 @@
             "TEXCOORD_0": 4
           },
           "indices": 0,
-          "extras": {
+          "extensions": {
             "FB_material_variants": {
               "mapping": [
                 {

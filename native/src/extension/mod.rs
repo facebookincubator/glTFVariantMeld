@@ -8,13 +8,22 @@
 //! We're specifically concerned with reading and writing values that are meaningful from
 //! the point of view of i.e. `WorkAsset` into a glTF format, and especially the abstraction
 //! we get from the `gltf` crates.
-//!
-//! TODO: This currently works on `extras` rather than `extensions`, because support for the
-//! latter is not as well-developed in the gltf crates. We may need to work against a fork of
-//! those to get proper extension support.
+
+use gltf::json::Root;
+
+const FB_MATERIAL_VARIANTS: &str = "FB_material_variants";
 
 mod on_root;
 pub use on_root::{get_validated_extension_tag, set_extension_tag};
 
 mod on_primitive;
 pub use on_primitive::{extract_variant_map, write_variant_map};
+
+/// Updates the `extensions_used` glTF property with the name of our extension.
+///
+pub fn install(root: &mut Root) {
+    let used = &mut root.extensions_used;
+    if !used.contains(&String::from(FB_MATERIAL_VARIANTS)) {
+        used.push(String::from(FB_MATERIAL_VARIANTS));
+    }
+}

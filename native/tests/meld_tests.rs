@@ -39,9 +39,6 @@ fn test_pinecone_meld() {
 
     let tinted_matte_shiny = meld_assets(&tinted_pinecone, &matte_shiny_pinecone);
     test(&tinted_matte_shiny, &tinted, vec![&matte, &shiny, &tinted]);
-
-    std::fs::write("/tmp/pinecones-melded.glb", tinted_matte_shiny.glb())
-        .expect("Couldn't write file!");
 }
 
 #[test]
@@ -98,6 +95,4 @@ fn test_teapot_meld() {
     test_tag(&melded, &camo_pink_silver, 227318);
     test_tag(&melded, &green_pink_silver, 337020);
     test_tag(&melded, &green_pink_bronze, 337020);
-
-    std::fs::write("/tmp/teapots-melded.glb", melded.glb()).expect("Couldn't write file!");
 }

@@ -46,7 +46,10 @@ impl<'a> WorkAsset {
         let mut root = self.parse.clone();
         let blob = self.blob.clone();
 
-        // mutate the clone with our additional state
+        // make note of the use of our glTF extension
+        extension::install(&mut root);
+
+        // then mutate the clone with our variational state
         self.export_extension_tag(&mut root)?;
         let metadata = self.export_variant_mapping(&mut root)?;
 

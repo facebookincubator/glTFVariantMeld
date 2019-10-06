@@ -3,16 +3,10 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use gltf::json::{extras::RawValue, Root};
+use gltf::json::Root;
 
+use super::FB_MATERIAL_VARIANTS;
 use crate::{Result, Tag};
-
-#[allow(non_snake_case)]
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct FBMaterialVariantRootExtras {
-    #[serde(default)]
-    pub FB_material_variants: Option<FBMaterialVariantRootExtension>,
-}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FBMaterialVariantRootExtension {
@@ -25,23 +19,24 @@ pub struct FBMaterialVariantRootExtension {
 /// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
 /// for further details.
 pub fn set_extension_tag(root: &mut Root, default_tag: &Tag) -> Result<()> {
-    let new_extras = FBMaterialVariantRootExtras {
-        FB_material_variants: Some(FBMaterialVariantRootExtension {
-            default_tag: default_tag.to_owned(),
-        }),
+    let extension = FBMaterialVariantRootExtension {
+        default_tag: default_tag.to_owned(),
     };
 
-    let json = serde_json::to_string_pretty(&new_extras);
+    let value = serde_json::to_string(&extension)
+        .and_then(|s| serde_json::from_str(&s))
+        .map_err(|e| {
+            format!(
+                "Failed to transform root extension {:#?}, with error: {}",
+                extension, e,
+            )
+        })?;
 
-    if let Ok(json) = json {
-        if let Ok(raw) = RawValue::from_string(json) {
-            root.extras = Some(Box::from(raw));
-            return Ok(());
-        }
-    }
-    Err(String::from(
-        "Failed to set default tag on FB_material_variants extension.",
-    ))
+    root.extensions
+        .get_or_insert(Default::default())
+        .others
+        .insert(FB_MATERIAL_VARIANTS.to_owned(), value);
+    Ok(())
 }
 
 /// Parses and returns the default key in any `FB_material_variants` extension on the JSON `Root`.
@@ -83,31 +78,28 @@ fn get_tag_from_extension(root: &Root) -> Result<Option<Tag>> {
 }
 
 fn get_root_extension(root: &Root) -> Result<Option<FBMaterialVariantRootExtension>> {
-    if let Some(boxed) = &root.extras {
-        let json_string = &boxed.to_string();
-        let parse: serde_json::Result<FBMaterialVariantRootExtras> =
-            serde_json::from_str(json_string);
-        match parse {
-            Ok(parse) => {
-                if let Some(extension) = parse.FB_material_variants {
-                    if extension.default_tag != "" {
-                        Ok(Some(extension))
+    if let Some(extensions) = &root.extensions {
+        if let Some(ref boxed) = extensions.others.get(FB_MATERIAL_VARIANTS) {
+            let json_string = boxed.to_string();
+            let parse: serde_json::Result<FBMaterialVariantRootExtension> =
+                serde_json::from_str(&json_string);
+            return match parse {
+                Ok(parse) => {
+                    if parse.default_tag != "" {
+                        Ok(Some(parse))
                     } else {
                         Err(format!(
                             "Missing default_tag in FB_material_variants root extension."
                         ))
                     }
-                } else {
-                    Ok(None)
                 }
-            }
-            Err(e) => Err(format!(
-                "Bad JSON in FB_material_variants extension: {}; json = {}",
-                e.to_string(),
-                json_string,
-            )),
+                Err(e) => Err(format!(
+                    "Bad JSON in FB_material_variants extension: {}; json = {}",
+                    e.to_string(),
+                    json_string,
+                )),
+            };
         }
-    } else {
-        Ok(None)
     }
+    Ok(None)
 }

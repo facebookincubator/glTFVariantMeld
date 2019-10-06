@@ -54,11 +54,11 @@ dependencies = [
 [[package]]
 name = "gltf"
 version = "0.13.0"
-source = "git+https://github.com/zellski/gltf-rs#d6724a0d84d7c2586e36c4ecd33393a18ae8b1ed"
+source = "git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld#28263402838adfffe376e08a9dc84c36b62b8339"
 dependencies = [
  "base64 0.10.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder 1.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "gltf-json 0.13.0 (git+https://github.com/zellski/gltf-rs)",
+ "gltf-json 0.13.0 (git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld)",
  "image 0.21.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -66,7 +66,7 @@ dependencies = [
 [[package]]
 name = "gltf-derive"
 version = "0.13.0"
-source = "git+https://github.com/zellski/gltf-rs#d6724a0d84d7c2586e36c4ecd33393a18ae8b1ed"
+source = "git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld#28263402838adfffe376e08a9dc84c36b62b8339"
 dependencies = [
  "inflections 1.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro2 1.0.5 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -77,9 +77,9 @@ dependencies = [
 [[package]]
 name = "gltf-json"
 version = "0.13.0"
-source = "git+https://github.com/zellski/gltf-rs#d6724a0d84d7c2586e36c4ecd33393a18ae8b1ed"
+source = "git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld#28263402838adfffe376e08a9dc84c36b62b8339"
 dependencies = [
- "gltf-derive 0.13.0 (git+https://github.com/zellski/gltf-rs)",
+ "gltf-derive 0.13.0 (git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld)",
  "serde 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.41 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -90,7 +90,7 @@ name = "gltf_variant_meld"
 version = "0.1.0"
 dependencies = [
  "assets 0.1.0",
- "gltf 0.13.0 (git+https://github.com/zellski/gltf-rs)",
+ "gltf 0.13.0 (git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld)",
  "serde 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.41 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -334,9 +334,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum byteorder 1.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "a7c3dd8985a7111efc5c80b44e23ecdd8c007de8ade3b96595387e812b957cf5"
 "checksum cfg-if 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)" = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 "checksum deflate 0.7.20 (registry+https://github.com/rust-lang/crates.io-index)" = "707b6a7b384888a70c8d2e8650b3e60170dfc6a67bb4aa67b6dfca57af4bedb4"
-"checksum gltf 0.13.0 (git+https://github.com/zellski/gltf-rs)" = "<none>"
-"checksum gltf-derive 0.13.0 (git+https://github.com/zellski/gltf-rs)" = "<none>"
-"checksum gltf-json 0.13.0 (git+https://github.com/zellski/gltf-rs)" = "<none>"
+"checksum gltf 0.13.0 (git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld)" = "<none>"
+"checksum gltf-derive 0.13.0 (git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld)" = "<none>"
+"checksum gltf-json 0.13.0 (git+https://github.com/zellski/gltf-rs?branch=for-gltf-variant-meld)" = "<none>"
 "checksum image 0.21.3 (registry+https://github.com/rust-lang/crates.io-index)" = "35371e467cd7b0b3d1d6013d619203658467df12d61b0ca43cd67b743b1965eb"
 "checksum inflate 0.4.5 (registry+https://github.com/rust-lang/crates.io-index)" = "1cdb29978cc5797bd8dcc8e5bf7de604891df2a8dc576973d71a281e916db2ff"
 "checksum inflections 1.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "a257582fdcde896fd96463bf2d40eefea0580021c0712a0e2b028b60b47a837a"

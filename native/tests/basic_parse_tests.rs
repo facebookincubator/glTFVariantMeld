@@ -26,11 +26,14 @@ fn test_tiny_parse() {
     let asset = VariationalAsset::from_slice(json.as_bytes(), Some(&Tag::from("tag")), None)
         .expect("glTF parse failure");
 
-    let asset = &Gltf::from_slice(asset.glb())
+    let asset = Gltf::from_slice(asset.glb())
         .or_else(|e| Err(e.to_string()))
         .expect("glTF re-parse failure");
 
     assert_that!(Vec::from_iter(asset.accessors())).has_length(0);
+    assert_that!(Vec::from_iter(asset.extensions_used())).has_length(1);
+
+    println!("JSON as parsed: {:#?}", asset.document.clone().into_json());
 }
 
 #[test]

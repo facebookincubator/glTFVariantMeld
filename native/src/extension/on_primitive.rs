@@ -7,14 +7,8 @@ use serde_derive::{Deserialize, Serialize};
 
 use gltf::json::mesh::Primitive;
 
+use super::FB_MATERIAL_VARIANTS;
 use crate::{Result, Tag};
-
-#[allow(non_snake_case)]
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct FBMaterialVariantPrimitiveExtras {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub FB_material_variants: Option<FBMaterialVariantPrimitiveExtension>,
-}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FBMaterialVariantPrimitiveExtension {
@@ -40,7 +34,9 @@ pub struct FBMaterialVariantPrimitiveEntry {
 /// for further details.
 pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usize>) -> Result<()> {
     if tag_to_ix.is_empty() {
-        primitive.extras = None;
+        if let Some(extensions) = &mut primitive.extensions {
+            extensions.others.remove(FB_MATERIAL_VARIANTS);
+        }
         return Ok(());
     }
     // invert the mapping tag->ix to a ix->set-of-tags one
@@ -66,21 +62,25 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
     // order entries deterministically
     mapping_entries.sort_unstable();
     // build structured extension data
-    let new_extras = FBMaterialVariantPrimitiveExtras {
-        FB_material_variants: Some(FBMaterialVariantPrimitiveExtension {
-            mapping: mapping_entries,
-        }),
+    let new_extension = FBMaterialVariantPrimitiveExtension {
+        mapping: mapping_entries,
     };
     // serialise to JSON string
-    let json_str = serde_json::to_string(&new_extras)
-        .map_err(|e| format!("Failed to serialise extension data: {}", e))?;
-
-    // deserialise JSON string to RawValue
-    let raw = serde_json::from_str(&json_str)
-        .map_err(|e| format!("Failed to build extension JSON: {}", e))?;
+    let value = serde_json::to_string(&new_extension)
+        .and_then(|s| serde_json::from_str(&s))
+        .map_err(|e| {
+            format!(
+                "Failed to transform primitive extension {:#?}, with error: {}",
+                new_extension, e,
+            )
+        })?;
 
     // and done
-    primitive.extras = Some(Box::from(raw));
+    primitive
+        .extensions
+        .get_or_insert(Default::default())
+        .others
+        .insert(FB_MATERIAL_VARIANTS.to_owned(), value);
     Ok(())
 }
 
@@ -90,29 +90,28 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
 /// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
 /// for further details
 pub fn extract_variant_map(primitive: &Primitive) -> Result<HashMap<Tag, usize>> {
-    if let Some(boxed) = &primitive.extras {
-        let json_string = &boxed.to_string();
-        let parse: serde_json::Result<FBMaterialVariantPrimitiveExtras> =
-            serde_json::from_str(json_string);
-        match parse {
-            Ok(parse) => {
-                let mut result = HashMap::new();
-                if let Some(extension) = parse.FB_material_variants {
-                    for entry in extension.mapping {
+    if let Some(extensions) = &primitive.extensions {
+        if let Some(boxed) = extensions.others.get(FB_MATERIAL_VARIANTS) {
+            let json_string = &boxed.to_string();
+            let parse: serde_json::Result<FBMaterialVariantPrimitiveExtension> =
+                serde_json::from_str(json_string);
+            return match parse {
+                Ok(parse) => {
+                    let mut result = HashMap::new();
+                    for entry in parse.mapping {
                         for tag in entry.tags {
                             result.insert(tag, entry.material as usize);
                         }
                     }
+                    Ok(result)
                 }
-                Ok(result)
-            }
-            Err(e) => Err(format!(
-                "Bad JSON in FB_material_variants extension: {}; json = {}",
-                e.to_string(),
-                json_string,
-            )),
+                Err(e) => Err(format!(
+                    "Bad JSON in FB_material_variants extension: {}; json = {}",
+                    e.to_string(),
+                    json_string,
+                )),
+            };
         }
-    } else {
-        Ok(HashMap::new())
     }
+    Ok(HashMap::new())
 }
