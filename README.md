@@ -1,6 +1,7 @@
 # glTFVariantMeld
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CircleCI](https://circleci.com/gh/facebookincubator/glTFVariantMeld/tree/master.svg?style=svg&circle-token=444333da241c0fc99a7ac8f786129f3bce774b43)](https://circleci.com/gh/facebookincubator/glTFVariantMeld/tree/master)
 
 ## Description
 

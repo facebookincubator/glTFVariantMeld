@@ -1,0 +1,36 @@
+# largely lifted from https://gist.github.com/zargony/de209b1a790c3cb2176c86405a51b33c
+
+version: 2
+jobs:
+  build_and_test:
+    docker:
+      - image: circleci/rust:buster
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v4-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+      - run:
+          name: Update Rust
+          command: rustup update
+      - run:
+          name: Version information
+          command: rustc --version; cargo --version; rustup --version
+      - run:
+          name: Build all targets
+          command: cargo build --all --all-targets
+      - save_cache:
+          paths:
+            - /usr/local/cargo/registry
+            - target/debug/.fingerprint
+            - target/debug/build
+            - target/debug/deps
+          key: v4-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+      - run:
+          name: Run all tests
+          command: cargo test --all
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_and_test
