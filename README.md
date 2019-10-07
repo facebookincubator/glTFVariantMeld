@@ -14,8 +14,9 @@ without latency or stuttering.
 
 We're making this internal tool publicly available with the hope of helping the glTF
 ecosystem come together around a common, open format. In this prerelease version, the tool
-produces files with the vendor extension [TODO: link](`FB_material_variants`). We are
-hopeful that the glTF community will find speedy consensus around a ratified extension.
+produces files with the vendor extension
+[`FB_material_variants`](https://github.com/KhronosGroup/glTF/pull/1681). We are hopeful
+that the glTF community will find speedy consensus around a ratified extension.
 
 ## Installation
 
