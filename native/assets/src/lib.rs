@@ -1,3 +1,6 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+//
+
 #![allow(dead_code, non_snake_case)]
 
 use std::path::Path;
