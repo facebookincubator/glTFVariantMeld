@@ -5,12 +5,11 @@
 
 ## Description
 
-This tool melds multiple glTF assets, each representing a different _variant_ of a model,
-into a single, compact format, implemented as a glTF extension.
+This tool melds multiple glTF assets, each representing a different _variant_ of a model, into a single, compact format, implemented as a glTF extension.
 
-A canonical example use is a retail product that's available in a range of colours, with
-an application that lets a prospective customer switch between these different variants
-without latency or stuttering.
+A canonical use case is a retail product that's available in a range of colour combinations, with an
+application that lets a prospective customer switch between these different variants with minimal
+latency.
 
 We're making this internal tool publicly available with the hope of helping the glTF
 ecosystem come together around a common, open format. In this prerelease version, the tool
@@ -18,20 +17,25 @@ produces files with the vendor extension
 [`FB_material_variants`](https://github.com/KhronosGroup/glTF/pull/1681). We are hopeful
 that the glTF community will find speedy consensus around a ratified extension.
 
-## Installation
-
-TODO: We've yet to actually publish an NPM package. Until we do, please [build it yourself.](BUILDING.md)
-
-```
-    > npm install -g gltf-variant-meld
-```
+In this prerelease version, the tool produces files with the vendor extension [`FB_material_variants`](https://github.com/KhronosGroup/glTF/blob/f0ab429b4260cfa91925bcf5044624968773902c/extensions/2.0/Vendor/FB_material_variants/README.md). We are hopeful that the glTF community will find speedy consensus around a multi-vendor extension.
 
 Our aspirational roadmap includes the development of a web app which would leverage
 WebAssembly to run entirely in the browser. There will also be a native CLI.
 
+**Assistance is always welcome!** Pull requests are encouraged.
+
+## Installation
+
+We've yet to actually publish a release. Until we do, please [build the bleeding edge code yourself.](BUILDING.md)
+
 ## Usage
 
-Using the (quite primitive, as yet) command-line interface might look like:
+The tool depends on glTF source files that are **identical** except for which materials the various
+meshes reference. The proposed work flow is to export the same asset from the same digital content
+creation app repeatedly, taking care to make no changes to geometry or structure between each
+exported file.
+
+Then, using the (quite primitive, as yet) command-line interface might look like:
 
 ```shell
 > dist/app.js black:GizmoBlack.glb blue:GizmoBlue.glb clear:GizmoClear.glb GizmoVariational.glb
@@ -54,6 +58,11 @@ New melded result:
   Of which is depends on tag: 4.0 MB
 Success! 4594404 bytes written to 'GizmoVariational.glb'.
 ```
+
+The first source file contains 1.8 MB of textures and 0.6 MB of geometry. Subsequent source files
+contribute first another 1.5 MB of textures, and then for the third variant, 1.7 MB. The geometry
+of the asset remains constant.
+
 
 ### Asset Requirements
 
@@ -78,8 +87,8 @@ See the [CONTRIBUTING](CONTRIBUTING.md) file for how to help out.
 
 ## Credits
 
-This tool was written by Pär Winzell, Renee Rashid, Susie Su, and Jeremy Cytryn, and made possible
-through the hard work of others:
+This tool was written by Pär Winzel and Renee Rashid with help from Susie Su and Jeremy Cytryn,
+and ultimately made possible only through the hard work of others:
 
 - The [Rust](https://www.rust-lang.org/) language & community,
 - The authors of [`wasm-bindgen`](https://rustwasm.github.io/docs/wasm-bindgen/), for WebAssembly support,
