@@ -30,12 +30,12 @@ Grab the actual repository:
 
 ```
     > git clone https://github.com/facebookincubator/glTFVariantMeld
-    > cd variationator/native
+    > cd glTFVariantMeld
 ```
 
 ## Generate Rust Binaries
 
-At this point you should be able to run `cargo build`. Binaries will end up in `./target/debug/`.
+At this point you should be able to run `cargo build`, which will recurse into `./native` where the Rust source lives. Binaries will end up in `./target/debug/`.
 
 ## Generate WebAssembly Package
 
@@ -45,24 +45,21 @@ If you now try:
    > ./build-wasm-pkg.sh
 ```
 
-you should end up with a generated NPM package in `../web/wasmpkg/`.
+you should end up with a generated NPM package in `./web/wasmpkg/`.
 
-You can eyeball it for fun, but we don't do anything with the generated package directly. We just
-reference it from elsewhere, as per the next section.
+You can eyeball it for fun, but we don't do anything with the generated package directly. We just reference it from elsewhere, as per the next section.
 
 ## Run the Node.js test app
 
 Now simply run:
 
 ```
-    > cd ../web/cli
+    > cd web/cli
     > npm install
     > ./build-node-app.sh
 ```
 
-This script should make sure you've got NVM installed, and then use it to make sure you're
-running the recommended Node.js version, then execute the TypeScript-blessed WebPack
-to generate the required files in `./dist`. Something like this:
+This script should make sure you've got NVM installed, and then use it to make sure you're running the recommended Node.js version, then execute the TypeScript-blessed WebPack to generate the required files in `./dist`. Something like this:
 
 ```
     > ls -l ./dist
@@ -73,6 +70,4 @@ to generate the required files in `./dist`. Something like this:
 
 Finally, the script executes `dist/app.js` which actually runs the app.
 
-Tada! You have built a native library, converted it to WebAssembly, bundled it all into
-executable JavaScript, and successfully run it. It's not much harder to run it in the browser,
-but instructions for that will come later.
+Tada! You have built a native library, converted it to WebAssembly, bundled it all into executable JavaScript, and successfully run it. It's not much harder to run it in the browser, but instructions for that will come later.
