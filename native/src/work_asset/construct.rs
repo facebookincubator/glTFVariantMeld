@@ -14,8 +14,8 @@ use gltf::Gltf;
 
 use crate::extension;
 use crate::gltfext::{add_buffer_view_from_slice, set_root_buffer};
-use crate::meld_keys::HasKeyForVariants;
-use crate::{MeldKey, Result, Tag, WorkAsset};
+use crate::meld_keys::{build_fingerprint, HasKeyForVariants};
+use crate::{Fingerprint, MeldKey, Result, Tag, WorkAsset};
 
 impl WorkAsset {
     /// Constructs a `WorkAsset` from a file `Path` using `::from_slice`.
@@ -103,6 +103,8 @@ impl WorkAsset {
             mesh_keys: vec![],
             sampler_keys: vec![],
             texture_keys: vec![],
+
+            mesh_primitive_fingerprints: vec![],
         };
 
         // there is a strict dependency order here which must be observed
@@ -111,18 +113,10 @@ impl WorkAsset {
         asset.texture_keys = asset.build_meld_keys(&asset.parse.textures)?;
         asset.material_keys = asset.build_meld_keys(&asset.parse.materials)?;
         asset.mesh_keys = asset.build_meld_keys(&asset.parse.meshes)?;
+        asset.mesh_primitive_fingerprints = asset.build_fingerprints()?;
 
-        let mut seen = HashSet::new();
-        let mut dups = HashSet::new();
-        for mesh_key in &asset.mesh_keys {
-            if seen.contains(mesh_key) {
-                dups.insert(mesh_key);
-            }
-            seen.insert(mesh_key);
-        }
-        if !dups.is_empty() {
-            return Err(format!("Aii, non-unique meld keys: {:#?}", dups));
-        }
+        asset.ensure_unique_mesh_keys()?;
+        asset.ensure_uniqueish_fingerprints()?;
 
         let mesh_primitive_variants = asset.map_variants()?;
         asset.mesh_primitive_variants = mesh_primitive_variants;
@@ -137,6 +131,52 @@ impl WorkAsset {
             .to_owned()
             .collect();
         vec_of_results.into_iter().collect()
+    }
+
+    fn build_fingerprints(&self) -> Result<Vec<Vec<Fingerprint>>> {
+        let gltf = self.to_owned_gltf();
+
+        let mut result = vec![];
+        for mesh in gltf.meshes() {
+            let mut fingerprints = vec![];
+            for primitive in mesh.primitives() {
+                fingerprints.push(build_fingerprint(&primitive, &self.blob)?);
+            }
+            result.push(fingerprints);
+        }
+        Ok(result)
+    }
+
+    fn ensure_unique_mesh_keys(&self) -> Result<()> {
+        let mut seen = HashSet::new();
+        let mut dups = HashSet::new();
+        for mesh_key in &self.mesh_keys {
+            if seen.contains(mesh_key) {
+                dups.insert(mesh_key);
+            }
+            seen.insert(mesh_key);
+        }
+        if !dups.is_empty() {
+            Err(format!("Aii, non-unique meld keys: {:#?}", dups))
+        } else {
+            Ok(())
+        }
+    }
+
+    fn ensure_uniqueish_fingerprints(&self) -> Result<()> {
+        for (mesh_ix, fingerprints) in self.mesh_primitive_fingerprints.iter().enumerate() {
+            for (primitive_ix, fingerprint) in fingerprints.iter().enumerate() {
+                if let Some(other_print) =
+                    self.find_almost_equal_fingerprint(mesh_ix, fingerprint, Some(primitive_ix))
+                {
+                    return Err(format!(
+                        "Can't cope with primitives {} and {} of mesh {} being identical.",
+                        primitive_ix, other_print, mesh_ix
+                    ));
+                }
+            }
+        }
+        Ok(())
     }
 
     fn map_variants(&self) -> Result<Vec<Vec<HashMap<Tag, MeldKey>>>> {

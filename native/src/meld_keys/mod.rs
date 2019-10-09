@@ -4,17 +4,16 @@
 mod key_trait;
 pub use key_trait::HasKeyForVariants;
 
-/// A short string that uniquely identifies certain glTF objects.
-///
-/// Two logically identical objects can be bitwise quite different between different glTF
-/// exports, different versions of the exporter, or even different runs with the same exporter.
-///
-/// For example:
-/// - The order of glTF object arrays is unimportant, and may vary freely between runs.
-/// - Scene graphs can be constructed in countless ways while representing the same structure.
-/// - Neither mesh triangles nor vertices are strictly ordered, so identity is non-trivial.
-/// - Floating-point computation is inexact, so comparisons should be fuzzy, à la `||Δv|| < ε`.
-///
-/// NOTE: In practice, we currently compute these keys in a very straight-forward fashion. The
-/// one for a `Mesh`, for example, is simply its name. This likely won't suffice in the long run.
+mod fingerprints;
+pub use fingerprints::build_fingerprint;
+
+/// A short string that uniquely identifies all glTF objects other than `Mesh` `Primitives`.
 pub type MeldKey = String;
+
+/// A floating-point number that identifies logically identical `Mesh` `Primitives`.
+///
+/// Most glTF objects are given a simple, unique key as part of the `MeldKey` mechanism.
+/// For geometry, things are trickier. To begin with, neither the order of triangles (indices)
+/// nor vectors are important, so any comparison must be order-agnostic. Worse, floating-point
+/// calculations are inexact, and so identity there must be of the ||x - x'|| < ε type.
+pub type Fingerprint = f64;

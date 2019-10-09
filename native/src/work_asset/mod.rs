@@ -3,9 +3,10 @@
 
 use std::collections::HashMap;
 
-use gltf::json::{buffer::View, texture::Sampler, Image, Material, Mesh, Root, Texture};
+use gltf::json::{buffer::View, Image, Material, Mesh, Root};
+use gltf::json::{texture::Sampler, Texture};
 
-use crate::{MeldKey, Result, Tag};
+use crate::{Fingerprint, MeldKey, Result, Tag};
 
 use crate::gltfext::add_buffer_view_from_slice;
 
@@ -14,6 +15,8 @@ pub mod construct;
 pub mod export;
 
 pub mod meld;
+
+const EPS_FINGERPRINT: f64 = 1e-6;
 
 /// The primary internal data structure, which enables and accelerates the melding operation.
 ///
@@ -53,6 +56,8 @@ pub struct WorkAsset {
     sampler_keys: Vec<MeldKey>,
     /// A `MeldKey` for each `Texture`; a straight-forward string expansion of its state.
     texture_keys: Vec<MeldKey>,
+
+    mesh_primitive_fingerprints: Vec<Vec<f64>>,
 }
 
 impl WorkAsset {
@@ -90,6 +95,48 @@ impl WorkAsset {
         let start = view.byte_offset.unwrap_or(0) as usize;
         let end = start + view.byte_length as usize;
         &self.blob[start..end]
+    }
+
+    /// Clone our JSON data and blob, and create a `Gltf` wrapper around it.
+    pub fn to_owned_gltf(&self) -> gltf::Gltf {
+        gltf::Gltf {
+            document: gltf::Document::from_json_without_validation(self.parse.clone()),
+            blob: if self.blob.is_empty() {
+                None
+            } else {
+                Some(self.blob.clone())
+            },
+        }
+    }
+
+    /// Search the `Primitives` of a `Mesh` non-exactly for a specific `Fingerprint`.
+    pub fn find_almost_equal_fingerprint(
+        &self,
+        mesh_ix: usize,
+        print: &Fingerprint,
+        exclude_ix: Option<usize>,
+    ) -> Option<usize> {
+        let prints = &self.mesh_primitive_fingerprints[mesh_ix];
+        for (primitive_ix, primitive_print) in prints.iter().enumerate() {
+            if let Some(exclude_ix) = exclude_ix {
+                if exclude_ix == primitive_ix {
+                    println!("Excluding test for ix {}.", exclude_ix);
+                    continue;
+                }
+            }
+            if (primitive_print - print).abs() < EPS_FINGERPRINT {
+                println!(
+                    "Successfully tested {} against #{}: {}",
+                    print, primitive_ix, primitive_print
+                );
+                return Some(primitive_ix);
+            }
+            println!(
+                "No match testing {} against #{}: {}",
+                print, primitive_ix, primitive_print
+            );
+        }
+        return None;
     }
 
     /// Adds a new buffer view to the asset, returning its index.
