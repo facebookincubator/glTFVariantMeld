@@ -42,7 +42,6 @@ pub fn build_fingerprint(primitive: &Primitive, blob: &[u8]) -> Result<Fingerpri
         .collect();
 
     let count = indices.len() as f64;
-    println!("Index count: {}", count);
 
     let mut cumulative_fingerprint = {
         let mut print: f64 = 0.0;

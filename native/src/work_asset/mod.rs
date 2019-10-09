@@ -21,7 +21,7 @@ const EPS_FINGERPRINT: f64 = 1e-6;
 /// The primary internal data structure, which enables and accelerates the melding operation.
 ///
 /// The first half of the asset constitutes all the data needed to export fully variational glTF:
-/// the source document and blob, a default tag, and the per- mesh, per-primitive mapping of tags to
+/// the source document and blob, a default tag, and the per-mesh, per-primitive mapping of tags to
 /// materials.
 ///
 /// The second half are meld keys for various glTF objects, which are used heavily in the melding
@@ -57,7 +57,9 @@ pub struct WorkAsset {
     /// A `MeldKey` for each `Texture`; a straight-forward string expansion of its state.
     texture_keys: Vec<MeldKey>,
 
-    mesh_primitive_fingerprints: Vec<Vec<f64>>,
+    /// Each `Primitive` of each `Mesh` has a `Fingerprint` computed for it, and they are
+    /// stored herein.
+    mesh_primitive_fingerprints: Vec<Vec<Fingerprint>>,
 }
 
 impl WorkAsset {
@@ -120,21 +122,12 @@ impl WorkAsset {
         for (primitive_ix, primitive_print) in prints.iter().enumerate() {
             if let Some(exclude_ix) = exclude_ix {
                 if exclude_ix == primitive_ix {
-                    println!("Excluding test for ix {}.", exclude_ix);
                     continue;
                 }
             }
             if (primitive_print - print).abs() < EPS_FINGERPRINT {
-                println!(
-                    "Successfully tested {} against #{}: {}",
-                    print, primitive_ix, primitive_print
-                );
                 return Some(primitive_ix);
             }
-            println!(
-                "No match testing {} against #{}: {}",
-                print, primitive_ix, primitive_print
-            );
         }
         return None;
     }

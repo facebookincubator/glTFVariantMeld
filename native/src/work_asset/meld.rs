@@ -43,9 +43,6 @@ impl<'a> WorkAsset {
 
                     let mut other_map = other.variant_mapping(other_mesh_ix, primitive_ix).clone();
 
-                    // NOTE[TODO]: We should look primitives up per key, just as we do with all
-                    // other glTF objects, but here suddenly we assume that meshes between two
-                    // assets have precisely the same vectors of primitives in the same order.
                     let base_print = base.mesh_primitive_fingerprints[base_mesh_ix][primitive_ix];
                     let other_primitive_ix = other
                         .find_almost_equal_fingerprint(other_mesh_ix, &base_print, None)

@@ -79,6 +79,14 @@ impl WorkAsset {
     /// `Texture`, `Material` and `Mesh`. Please consult the `::meld_keys` module for details on
     /// meld keys.
     ///
+    /// We require that `Mesh` keys are unique, and protest if they're not.
+    ///
+    /// Next, every `Primitives` of every `Mesh` is given a `Fingerprint`, which is essentially a
+    /// floating-point `MeldKey` that can be used to match logically identical objects that have
+    /// numerically drifted apart to some microscopic degree.
+    ///
+    /// We require that `Primitive` fingerprints are unique, to within a tolerance.
+    ///
     /// Finally, each mesh and mesh primitive is inspected, and any `FB_material_variants` data is
     /// parsed and converted to a Tag->MeldKey mapping, filling in `mesh_primitive_variants` and
     /// completing the `WorkAsset` construction.
