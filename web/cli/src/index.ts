@@ -1,14 +1,14 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 //
 
-import { Variationator, runWithVariationator } from "./wasmpkg";
+import { glTFVariantMeld, runWithVariantMeld } from "./wasmpkg";
 import { readFileSync, writeFileSync } from "fs";
 import { basename } from "path";
-import { VariationalAsset } from "../node_modules/@zellski/variationator/variationator";
+import { VariationalAsset } from "../node_modules/glTFVariantMeld/gltf_variant_meld";
 
 const GLB_MAGIC: number = 0x46546c67;
 
-runWithVariationator(start)
+runWithVariantMeld(start)
   .then(() => {
     // cool
   })
@@ -16,7 +16,7 @@ runWithVariationator(start)
     console.error("Aborting due to error: " + err);
   });
 
-function start(wasmpkg: Variationator) {
+function start(wasmpkg: glTFVariantMeld) {
   let args = process.argv.slice(2);
   if (args.length < 2) {
     console.error(

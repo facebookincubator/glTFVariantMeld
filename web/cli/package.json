@@ -4,7 +4,7 @@
   },
   "dependencies": {
     "@types/node": "^12.7.7",
-    "@zellski/variationator": "file:../wasmpkg"
+    "glTFVariantMeld": "file:../wasmpkg"
   },
   "devDependencies": {
     "ts-loader": "^6.0.4",
