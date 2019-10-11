@@ -1,11 +1,11 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 //
 
-import { VariationalAsset } from "../node_modules/@zellski/variationator/variationator";
+import { VariationalAsset } from "../node_modules/glTFVariantMeld/gltf_variant_meld";
 
-export type Variationator = typeof import("../node_modules/@zellski/variationator/variationator.js");
+export type glTFVariantMeld = typeof import("../node_modules/glTFVariantMeld/gltf_variant_meld.js");
 
-export async function runWithVariationator(callback: (v: Variationator) => void) {
-  let module = await import("../node_modules/@zellski/variationator/variationator.js");
+export async function runWithVariantMeld(callback: (v: glTFVariantMeld) => void) {
+  let module = await import("../node_modules/glTFVariantMeld/gltf_variant_meld.js");
   callback(module);
 }
