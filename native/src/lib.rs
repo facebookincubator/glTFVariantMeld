@@ -74,4 +74,4 @@ pub use gltfext::*;
 
 /// Mapping glTF objects to unique keys for melding purposes.
 pub mod meld_keys;
-pub use meld_keys::MeldKey;
+pub use meld_keys::{Fingerprint, MeldKey};

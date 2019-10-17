@@ -4,8 +4,9 @@
 use sha1::Sha1;
 
 use gltf::json::texture;
+use gltf::json::Mesh;
 use gltf::json::{material::NormalTexture, material::OcclusionTexture};
-use gltf::json::{texture::Sampler, Image, Index, Material, Mesh, Texture};
+use gltf::json::{texture::Sampler, Image, Index, Material, Texture};
 
 use crate::{MeldKey, Result, WorkAsset};
 
