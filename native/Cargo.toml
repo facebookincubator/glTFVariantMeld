@@ -43,3 +43,10 @@ features = ["raw_value"]
 
 [dependencies.sha1]
 version = "^0.6"
+
+[dependencies.clap]
+version = "^2.33.0"
+
+[[bin]]
+name = "meldtool"
+path = "src/bin/meldtool.rs"
