@@ -49,4 +49,4 @@ version = "^2.33.0"
 
 [[bin]]
 name = "meldtool"
-path = "src/bin/meldtool.rs"
+path = "src/bin/meldtool/mod.rs"
