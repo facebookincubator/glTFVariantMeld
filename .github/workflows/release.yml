@@ -1,0 +1,39 @@
+name: Release Build
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    name: "Build '${{ matrix.rust }}' on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os.github-name }}
+    strategy:
+      matrix:
+        os:
+          - artifact-name: Linux/meldtool
+            github-name: ubuntu-latest
+          - artifact-name: Windows/meldtool.exe
+            github-name: windows-latest
+          - artifact-name: Mac/meldtool
+            github-name: macOS-latest
+        rust: stable
+    steps:
+      - name: Setup
+      - uses: actions/checkout@v1
+      - uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: ${{ matrix.rust }}
+      - name: Build
+        run: cargo build --release
+      - name: Run tests
+        run: cargo test
+      - name: Upload
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/meldtool
+          asset_name: ${{ matrix.os.artifact-name }}
+          tag: ${{ github.ref }}
+          overwrite: true
