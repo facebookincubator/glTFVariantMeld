@@ -17,9 +17,10 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         rust: [stable, nightly]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v1
       - name: Setup
-      - uses: actions/checkout@v1
-      - uses: hecrj/setup-rust-action@v1
+        uses: hecrj/setup-rust-action@v1
         with:
           rust-version: ${{ matrix.rust }}
       - name: Build

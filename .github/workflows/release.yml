@@ -20,14 +20,15 @@ jobs:
             github-name: macOS-latest
         rust: stable
     steps:
+      - name: Checkout
+        uses: actions/checkout@v1
       - name: Setup
-      - uses: actions/checkout@v1
-      - uses: hecrj/setup-rust-action@v1
+        uses: hecrj/setup-rust-action@v1
         with:
           rust-version: ${{ matrix.rust }}
       - name: Build
         run: cargo build --release
-      - name: Run tests
+      - name: Test
         run: cargo test
       - name: Upload
         uses: svenstaro/upload-release-action@v1-release
