@@ -1,4 +1,4 @@
-name: Smoke Build
+name: Smoke
 
 on:
   push:
