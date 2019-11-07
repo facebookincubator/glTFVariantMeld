@@ -101,7 +101,7 @@ pub fn parse_args() -> WorkOrder {
                 .short("q")
                 .long("quiet")
                 .takes_value(false)
-                .help("output nothing"),
+                .help("suppress all informational output"),
         )
         .get_matches();
 
