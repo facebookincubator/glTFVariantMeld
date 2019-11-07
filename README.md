@@ -1,7 +1,6 @@
 # glTFVariantMeld
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CircleCI](https://circleci.com/gh/facebookincubator/glTFVariantMeld/tree/master.svg?style=svg&circle-token=444333da241c0fc99a7ac8f786129f3bce774b43)](https://circleci.com/gh/facebookincubator/glTFVariantMeld/tree/master)
 [![Actions Status](https://github.com/facebookincubator/glTFVariantMeld/workflows/Rust/badge.svg)](https://github.com/facebookincubator/glTFVariantMeld/actions)
 
 ## Description
@@ -12,22 +11,16 @@ A canonical use case is a retail product that's available in a range of colour c
 application that lets a prospective customer switch between these different variants with minimal
 latency.
 
-We're making this internal tool publicly available with the hope of helping the glTF
-ecosystem come together around a common, open format. In this prerelease version, the tool
-produces files with the vendor extension
-[`FB_material_variants`](https://github.com/KhronosGroup/glTF/pull/1681). We are hopeful
-that the glTF community will find speedy consensus around a ratified extension.
+Facebook is making this tool publicly available to help the glTF ecosystem come together
+around a common, open format.
 
 In this prerelease version, the tool produces files with the vendor extension [`FB_material_variants`](https://github.com/KhronosGroup/glTF/blob/f0ab429b4260cfa91925bcf5044624968773902c/extensions/2.0/Vendor/FB_material_variants/README.md). We are hopeful that the glTF community will find speedy consensus around a multi-vendor extension.
 
-Our aspirational roadmap includes the development of a web app which would leverage
-WebAssembly to run entirely in the browser. There will also be a native CLI.
-
-**Assistance is always welcome!** Pull requests are encouraged.
+**Assistance is welcome!** Pull requests are encouraged.
 
 ## Installation
 
-We've yet to actually publish a release. Until we do, please [build the bleeding edge code yourself.](BUILDING.md)
+Release builds of the command-line tool are available for MacOS, Windows and Linux in the form of single stand-alone binaries, which may be found [here](https://github.com/facebookincubator/glTFVariantMeld/releases).
 
 ## Usage
 
@@ -63,7 +56,6 @@ Success! 4594404 bytes written to 'GizmoVariational.glb'.
 The first source file contains 1.8 MB of textures and 0.6 MB of geometry. Subsequent source files
 contribute first another 1.5 MB of textures, and then for the third variant, 1.7 MB. The geometry
 of the asset remains constant.
-
 
 ### Asset Requirements
 
