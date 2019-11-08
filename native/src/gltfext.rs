@@ -27,6 +27,10 @@ pub fn add_buffer_view_from_slice(
     buffer_views: &mut Vec<View>,
     blob: &mut Vec<u8>,
 ) -> Index<View> {
+    while (blob.len() % 4) != 0 {
+        blob.push(0x00);
+    }
+
     let view_ix = buffer_views.len();
     let view = View {
         buffer: Index::new(0),
@@ -40,9 +44,6 @@ pub fn add_buffer_view_from_slice(
     };
     buffer_views.push(view);
 
-    while (blob.len() % 4) != 0 {
-        blob.push(0x00);
-    }
     blob.extend_from_slice(bytes);
 
     Index::new(view_ix as u32)
