@@ -20,10 +20,10 @@ impl<'a> WorkAsset {
     /// First, we put together the finished structured asset:
     /// - Clone the JSON in `WorkAsset.parse` as well as the `WorkAsset.blob` byte vector.
     /// - Write `WorkAsset.default_tag` into the root of the new JSON, using the
-    ///   `FB_material_variants` extension.
+    ///   `KHR_materials_variants` extension.
     /// - Iterate over every mesh and mesh primitive in `WorkAsset.mesh_primitive_variants`,
     ///   and wherever there is a non-empty variational Tag->Material mapping, convert that to
-    ///   `FB_material_variants` form and write it into the mesh primitive's JSON.
+    ///   `KHR_materials_variants` form and write it into the mesh primitive's JSON.
     ///
     /// Next, we count up all the metadata.
     ///

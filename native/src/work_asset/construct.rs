@@ -70,7 +70,7 @@ impl WorkAsset {
     /// the JSON. After this step, the asset is entirely self-contained, and the `file_base`
     /// argument is no longer used.
     ///
-    /// Next, we validate/retrieve any default tag embedded using the `FB_material_variants`
+    /// Next, we validate/retrieve any default tag embedded using the `KHR_materials_variants`
     /// extension. This tag must match the `default_tag` provided as argument, if any, and if none
     /// was provided it must exist in the asset. This ensure `WorkAsset.default_tag` always exists
     /// and makes sense.
@@ -87,7 +87,7 @@ impl WorkAsset {
     ///
     /// We require that `Primitive` fingerprints are unique, to within a tolerance.
     ///
-    /// Finally, each mesh and mesh primitive is inspected, and any `FB_material_variants` data is
+    /// Finally, each mesh and mesh primitive is inspected, and any `KHR_materials_variants` data is
     /// parsed and converted to a Tag->MeldKey mapping, filling in `mesh_primitive_variants` and
     /// completing the `WorkAsset` construction.
     pub fn new(

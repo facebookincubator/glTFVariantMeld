@@ -2,7 +2,7 @@
 //
 
 //! Implementation of our
-//! [`FB_variant_mapping`](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
+//! [`FB_variant_mapping`](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Khronos/KHR_materials_variants/README.md)
 //! extension.
 //!
 //! We're specifically concerned with reading and writing values that are meaningful from
@@ -11,7 +11,7 @@
 
 use gltf::json::Root;
 
-const FB_MATERIAL_VARIANTS: &str = "FB_material_variants";
+const KHR_MATERIALS_VARIANTS: &str = "KHR_materials_variants";
 
 mod on_root;
 pub use on_root::{get_validated_extension_tag, set_extension_tag};
@@ -23,7 +23,7 @@ pub use on_primitive::{extract_variant_map, write_variant_map};
 ///
 pub fn install(root: &mut Root) {
     let used = &mut root.extensions_used;
-    if !used.contains(&String::from(FB_MATERIAL_VARIANTS)) {
-        used.push(String::from(FB_MATERIAL_VARIANTS));
+    if !used.contains(&String::from(KHR_MATERIALS_VARIANTS)) {
+        used.push(String::from(KHR_MATERIALS_VARIANTS));
     }
 }

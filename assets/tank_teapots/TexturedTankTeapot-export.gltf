@@ -14775,7 +14775,7 @@
   ],
   "scene": 0,
   "extras": {
-  "FB_material_variants": {
+  "KHR_materials_variants": {
     "default_tag": "original"
   }
 },

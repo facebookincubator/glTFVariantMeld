@@ -20,8 +20,8 @@
 //! perhaps digital content creation tools will include ways to export variational assets natively.
 //! Until that day, this is how we're doing it.
 //!
-//! In this prerelease version, the tool produces files with the vendor extension
-//! [`FB_material_variants`](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md).
+//! In this prerelease version, the tool produces files with the Khronos extension
+//! [`KHR_materials_variants`](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Khronos/KHR_materials_variants/README.md).
 //! We are hopeful that the glTF community will find speedy consensus around a fully
 //! ratified extension, e.g. `KHR_material_variants`.
 //!
@@ -55,7 +55,7 @@ pub type Error = String;
 /// Convenience type for a Result using our Error.
 pub type Result<T> = ::std::result::Result<T, crate::Error>;
 
-/// The JSON/Serde implementation of `FB_material_variants`.
+/// The JSON/Serde implementation of `KHR_materials_variants`.
 pub mod extension;
 
 /// The VarationalAsset struct and associated functionality.

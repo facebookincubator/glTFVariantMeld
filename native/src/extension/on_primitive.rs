@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use gltf::json::mesh::Primitive;
 
-use super::FB_MATERIAL_VARIANTS;
+use super::KHR_MATERIALS_VARIANTS;
 use crate::{Result, Tag};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -25,17 +25,17 @@ pub struct FBMaterialVariantPrimitiveEntry {
     pub tags: Vec<Tag>,
 }
 
-/// Write the `tag_to_ix` mapping to the `Primitive' in `FB_material_variants` form.
+/// Write the `tag_to_ix` mapping to the `Primitive' in `KHR_materials_variants` form.
 ///
 /// This method guarantees a deterministic ordering of the output.
 ///
-/// Please see [the `FB_material_variants`
-/// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
+/// Please see [the `KHR_materials_variants`
+/// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Khronos/KHR_materials_variants/README.md)
 /// for further details.
 pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usize>) -> Result<()> {
     if tag_to_ix.is_empty() {
         if let Some(extensions) = &mut primitive.extensions {
-            extensions.others.remove(FB_MATERIAL_VARIANTS);
+            extensions.others.remove(KHR_MATERIALS_VARIANTS);
         }
         return Ok(());
     }
@@ -80,18 +80,18 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
         .extensions
         .get_or_insert(Default::default())
         .others
-        .insert(FB_MATERIAL_VARIANTS.to_owned(), value);
+        .insert(KHR_MATERIALS_VARIANTS.to_owned(), value);
     Ok(())
 }
 
-/// Parses and returns the `FB_material_variants` data on a primitive, if any.
+/// Parses and returns the `KHR_materials_variants` data on a primitive, if any.
 ///
-/// Please see [the `FB_material_variants`
-/// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Vendor/FB_material_variants/README.md)
+/// Please see [the `KHR_materials_variants`
+/// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Khronos/KHR_materials_variants/README.md)
 /// for further details
 pub fn extract_variant_map(primitive: &Primitive) -> Result<HashMap<Tag, usize>> {
     if let Some(extensions) = &primitive.extensions {
-        if let Some(boxed) = extensions.others.get(FB_MATERIAL_VARIANTS) {
+        if let Some(boxed) = extensions.others.get(KHR_MATERIALS_VARIANTS) {
             let json_string = &boxed.to_string();
             let parse: serde_json::Result<FBMaterialVariantPrimitiveExtension> =
                 serde_json::from_str(json_string);
@@ -106,7 +106,7 @@ pub fn extract_variant_map(primitive: &Primitive) -> Result<HashMap<Tag, usize>>
                     Ok(result)
                 }
                 Err(e) => Err(format!(
-                    "Bad JSON in FB_material_variants extension: {}; json = {}",
+                    "Bad JSON in KHR_materials_variants extension: {}; json = {}",
                     e.to_string(),
                     json_string,
                 )),

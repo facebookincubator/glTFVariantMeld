@@ -4,7 +4,7 @@
     "version": "2.0"
   },
   "extensionsUsed": [
-    "FB_material_variants"
+    "KHR_materials_variants"
   ],
   "scene": 0,
   "buffers": [
@@ -128,7 +128,7 @@
           },
           "indices": 0,
           "extensions": {
-            "FB_material_variants": {
+            "KHR_materials_variants": {
               "mapping": [
                 {
                   "tags": [
