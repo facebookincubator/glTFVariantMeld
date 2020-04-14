@@ -20,7 +20,7 @@ pub mod wasm;
 /// The primary API data structure.
 ///
 /// The key property is a glTF asset in binary form (which will always implement
-/// the `FB_material_variants` extension), along with various useful metadata for
+/// the `KHR_materials_variants` extension), along with various useful metadata for
 /// the benefit of clients.
 ///
 /// The key method melds one variational asset into another:
@@ -52,7 +52,7 @@ pub mod wasm;
 #[wasm_bindgen]
 #[derive(Debug, Clone)]
 pub struct VariationalAsset {
-    /// The generated glTF for this asset. Will always implement `FB_material_variants`
+    /// The generated glTF for this asset. Will always implement `KHR_materials_variants`
     /// and is always in binary (GLB) form.
     pub(crate) glb: Vec<u8>,
 
@@ -75,10 +75,10 @@ pub struct AssetSizes {
 impl VariationalAsset {
     /// Generates a new `VariationalAsset` from a glTF file.
     ///
-    /// If the provided asset implements `FB_material_variants`, then `default_tag` must
+    /// If the provided asset implements `KHR_materials_variants`, then `default_tag` must
     /// either be empty or match the default tag within the asset.
     ///
-    /// If the asset doesn't implement `FB_material_variants`, then the argument
+    /// If the asset doesn't implement `KHR_materials_variants`, then the argument
     /// `default_tag` must be non-empty. If it does, then `default_tag` must either match
     /// what's in the asset, or else be empty.
     pub fn from_file(file: &Path, default_tag: Option<&Tag>) -> Result<VariationalAsset, Error> {
@@ -88,10 +88,10 @@ impl VariationalAsset {
 
     /// Generates a new `VariationalAsset` from a byte slice of glTF.
     ///
-    /// If the provided asset implements `FB_material_variants`, then `default_tag` must
+    /// If the provided asset implements `KHR_materials_variants`, then `default_tag` must
     /// either be empty or match the default tag within the asset.
     ///
-    /// If the asset doesn't implement `FB_material_variants`, then the argument
+    /// If the asset doesn't implement `KHR_materials_variants`, then the argument
     /// `default_tag` must be non-empty. If it does, then `default_tag` must either match
     /// what's in the asset, or else be empty.
     pub fn from_slice(
@@ -103,7 +103,7 @@ impl VariationalAsset {
         loaded.export()
     }
 
-    /// The generated glTF for this asset. Will always implement `FB_material_variants`
+    /// The generated glTF for this asset. Will always implement `KHR_materials_variants`
     /// and is always in binary (GLB) form.
     pub fn glb(&self) -> &[u8] {
         self.glb.as_slice()

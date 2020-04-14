@@ -14,11 +14,11 @@ latency.
 
 We're making this internal tool publicly available with the hope of helping the glTF
 ecosystem come together around a common, open format. In this prerelease version, the tool
-produces files with the vendor extension
-[`FB_material_variants`](https://github.com/KhronosGroup/glTF/pull/1681). We are hopeful
+produces files with the Khronos extension
+[`KHR_materials_variants`](https://github.com/KhronosGroup/glTF/pull/1681). We are hopeful
 that the glTF community will find speedy consensus around a ratified extension.
 
-In this prerelease version, the tool produces files with the vendor extension [`FB_material_variants`](https://github.com/KhronosGroup/glTF/blob/f0ab429b4260cfa91925bcf5044624968773902c/extensions/2.0/Vendor/FB_material_variants/README.md). We are hopeful that the glTF community will find speedy consensus around a multi-vendor extension.
+In this prerelease version, the tool produces files with the Khronos extension [`KHR_materials_variants`](https://github.com/KhronosGroup/glTF/blob/07c109becc3153d0d982d6c2086da7da979ab439/extensions/2.0/Khronos//KHR_materials_variants/README.md). We are hopeful that the glTF community will find speedy consensus around a Khronos extension.
 
 Our aspirational roadmap includes the development of a web app which would leverage
 WebAssembly to run entirely in the browser. There will also be a native CLI.
