@@ -22,7 +22,7 @@ pub struct FBMaterialVariantPrimitiveEntry {
     pub material: u32,
 
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub tags: Vec<Tag>,
+    pub variants: Vec<u32>,
 }
 
 /// Write the `tag_to_ix` mapping to the `Primitive' in `KHR_materials_variants` form.
@@ -32,7 +32,7 @@ pub struct FBMaterialVariantPrimitiveEntry {
 /// Please see [the `KHR_materials_variants`
 /// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Khronos/KHR_materials_variants/README.md)
 /// for further details.
-pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usize>) -> Result<()> {
+pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usize>, variant_ix_lookup: &HashMap<usize, Tag>) -> Result<()> {
     if tag_to_ix.is_empty() {
         if let Some(extensions) = &mut primitive.extensions {
             extensions.others.remove(KHR_MATERIALS_VARIANTS);
@@ -53,9 +53,19 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
             let mut tag_vec: Vec<Tag> = tags.iter().cloned().collect();
             // order tags deterministically
             tag_vec.sort_unstable();
+
+            let mut variants: Vec<u32> = tag_vec
+                .iter()
+                .map(|tag| {
+                    let (&variant_ix, _) = variant_ix_lookup.iter().find(|(_k, v)| v == &tag).unwrap();
+                    variant_ix as u32
+                })
+                .collect();
+            variants.sort_unstable();
+
             FBMaterialVariantPrimitiveEntry {
                 material: ix as u32,
-                tags: tags.iter().cloned().collect(),
+                variants,
             }
         })
         .collect();
@@ -89,7 +99,7 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
 /// Please see [the `KHR_materials_variants`
 /// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Khronos/KHR_materials_variants/README.md)
 /// for further details
-pub fn extract_variant_map(primitive: &Primitive) -> Result<HashMap<Tag, usize>> {
+pub fn extract_variant_map(primitive: &Primitive, variant_ix_lookup: &HashMap<usize, Tag>) -> Result<HashMap<Tag, usize>> {
     if let Some(extensions) = &primitive.extensions {
         if let Some(boxed) = extensions.others.get(KHR_MATERIALS_VARIANTS) {
             let json_string = &boxed.to_string();
@@ -99,8 +109,10 @@ pub fn extract_variant_map(primitive: &Primitive) -> Result<HashMap<Tag, usize>>
                 Ok(parse) => {
                     let mut result = HashMap::new();
                     for entry in parse.mapping {
-                        for tag in entry.tags {
-                            result.insert(tag, entry.material as usize);
+                        for variant_ix in entry.variants {
+                            let key = variant_ix as usize;
+                            let variant_tag = &variant_ix_lookup[&key];
+                            result.insert(variant_tag.to_owned(), entry.material as usize);
                         }
                     }
                     Ok(result)

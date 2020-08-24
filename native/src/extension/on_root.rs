@@ -1,6 +1,6 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 //
-
+use std::collections::{HashMap};
 use serde_derive::{Deserialize, Serialize};
 
 use gltf::json::Root;
@@ -10,71 +10,72 @@ use crate::{Result, Tag};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FBMaterialVariantRootExtension {
-    pub default_tag: Tag,
+    pub variants: Vec<FBMaterialVariantVariantEntry>,
 }
 
-/// Write the given `default_tag` into the JSON `Root` in `KHR_materials_variants` form.
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Default, Deserialize, Serialize)]
+pub struct FBMaterialVariantVariantEntry {
+    #[serde(default)]
+    pub name: String,
+}
+
+/// Writes the root level variant lookup table containing object entries with each variant's
+/// associated tag.
 ///
 /// Please see [the `KHR_materials_variants`
 /// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Khronos/KHR_materials_variants/README.md)
 /// for further details.
-pub fn set_extension_tag(root: &mut Root, default_tag: &Tag) -> Result<()> {
-    let extension = FBMaterialVariantRootExtension {
-        default_tag: default_tag.to_owned(),
+pub fn write_root_variant_lookup_map(root: &mut Root, tags_in_use: &Vec<Tag>) -> Result<()> {
+    // Transform list of tags into a list of object with object property name and tag
+    let variant_entries: Vec<FBMaterialVariantVariantEntry> = tags_in_use
+        .into_iter()
+        .map(|tag| {
+            FBMaterialVariantVariantEntry {
+                name: tag.clone(),
+            }
+        })
+        .collect();
+
+    let root_extension = FBMaterialVariantRootExtension {
+        variants: variant_entries,
     };
 
-    let value = serde_json::to_string(&extension)
+    let value = serde_json::to_string(&root_extension)
         .and_then(|s| serde_json::from_str(&s))
         .map_err(|e| {
             format!(
                 "Failed to transform root extension {:#?}, with error: {}",
-                extension, e,
+                root_extension, e,
             )
         })?;
 
-    root.extensions
+    root
+        .extensions
         .get_or_insert(Default::default())
         .others
         .insert(KHR_MATERIALS_VARIANTS.to_owned(), value);
     Ok(())
 }
 
-/// Parses and returns the default key in any `KHR_materials_variants` extension on the JSON `Root`.
+/// Extracts the variant lookup object from the root of the glTF file. This lookup is used to
+/// translate Tags with indicies located on mesh primitives.
 ///
 /// Please see [the `KHR_materials_variants`
 /// spec](https://github.com/zellski/glTF/blob/ext/zell-fb-asset-variants/extensions/2.0/Khronos/KHR_materials_variants/README.md)
 /// for further details.
-pub fn get_validated_extension_tag(root: &Root, default_tag: Option<&Tag>) -> Result<Tag> {
-    let extension_tag = get_tag_from_extension(root)?;
-    match default_tag {
-        // no tag provided as argument: we require one from the extension data
-        None => {
-            if let Some(extension_tag) = extension_tag {
-                Ok(extension_tag)
-            } else {
-                Err(format!("No default tag provided, and none found in asset."))
+pub fn get_variant_lookup(root: &Root) -> Result<HashMap<usize, Tag>> {
+    match get_root_extension(&root)? {
+        Some(extension) => {
+            let mut lookup = HashMap::new();
+            for (ix, variant) in extension.variants.iter().enumerate() {
+                lookup.insert(ix, variant.name.to_owned());
             }
+            Ok(lookup)
         }
-        Some(default_tag) => {
-            // tag argument provided, we require extension to match, or be empty
-            if let Some(extension_tag) = extension_tag {
-                if extension_tag == *default_tag {
-                    Ok(default_tag.to_owned())
-                } else {
-                    Err(format!(
-                        "Provided tag ({}) does not match extension tag ({}).",
-                        default_tag, extension_tag
-                    ))
-                }
-            } else {
-                Ok(default_tag.to_owned())
-            }
+        None => {
+            Ok(HashMap::new())
         }
     }
-}
-
-fn get_tag_from_extension(root: &Root) -> Result<Option<Tag>> {
-    Ok(get_root_extension(root)?.map(|ext| ext.default_tag))
 }
 
 fn get_root_extension(root: &Root) -> Result<Option<FBMaterialVariantRootExtension>> {
@@ -85,13 +86,7 @@ fn get_root_extension(root: &Root) -> Result<Option<FBMaterialVariantRootExtensi
                 serde_json::from_str(&json_string);
             return match parse {
                 Ok(parse) => {
-                    if parse.default_tag != "" {
-                        Ok(Some(parse))
-                    } else {
-                        Err(format!(
-                            "Missing default_tag in KHR_materials_variants root extension."
-                        ))
-                    }
+                    Ok(Some(parse))
                 }
                 Err(e) => Err(format!(
                     "Bad JSON in KHR_materials_variants extension: {}; json = {}",

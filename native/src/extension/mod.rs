@@ -14,7 +14,7 @@ use gltf::json::Root;
 const KHR_MATERIALS_VARIANTS: &str = "KHR_materials_variants";
 
 mod on_root;
-pub use on_root::{get_validated_extension_tag, set_extension_tag};
+pub use on_root::{write_root_variant_lookup_map, get_variant_lookup};
 
 mod on_primitive;
 pub use on_primitive::{extract_variant_map, write_variant_map};

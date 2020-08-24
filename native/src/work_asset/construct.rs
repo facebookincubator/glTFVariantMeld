@@ -98,12 +98,13 @@ impl WorkAsset {
     ) -> Result<WorkAsset> {
         Self::transform_parse(&mut parse, &mut blob, file_base)?;
 
-        let default_tag = extension::get_validated_extension_tag(&parse, default_tag)?;
+        let default = Tag::from("default");
+        let tag = default_tag.unwrap_or(&default);
 
         let mut asset = WorkAsset {
             parse,
             blob,
-            default_tag,
+            default_tag: tag.to_owned(),
             mesh_primitive_variants: vec![],
 
             image_keys: vec![],
@@ -126,7 +127,8 @@ impl WorkAsset {
         asset.ensure_unique_mesh_keys()?;
         asset.ensure_uniqueish_fingerprints()?;
 
-        let mesh_primitive_variants = asset.map_variants()?;
+        let variant_lookup = extension::get_variant_lookup(&asset.parse)?;
+        let mesh_primitive_variants = asset.map_variants(variant_lookup)?;
         asset.mesh_primitive_variants = mesh_primitive_variants;
 
         Ok(asset)
@@ -187,12 +189,12 @@ impl WorkAsset {
         Ok(())
     }
 
-    fn map_variants(&self) -> Result<Vec<Vec<HashMap<Tag, MeldKey>>>> {
+    fn map_variants(&self, variant_ix_lookup: HashMap<usize, Tag>) -> Result<Vec<Vec<HashMap<Tag, MeldKey>>>> {
         let map_material = |(tag, ix): (&MeldKey, &usize)| -> Result<(Tag, MeldKey)> {
             Ok((tag.to_string(), self.material_keys[*ix].to_owned()))
         };
         let map_primitive = |p: &Primitive| -> Result<HashMap<Tag, MeldKey>> {
-            let variant_map = extension::extract_variant_map(p)?;
+            let variant_map = extension::extract_variant_map(p, &variant_ix_lookup)?;
             variant_map.iter().map(map_material).collect()
         };
         let map_mesh = |m: &Mesh| -> Result<Vec<HashMap<Tag, MeldKey>>> {
