@@ -134,8 +134,8 @@ impl VariationalAsset {
         base: &'a VariationalAsset,
         other: &'a VariationalAsset,
     ) -> Result<VariationalAsset, Error> {
-        let base = &WorkAsset::from_slice(base.glb(), None, None)?;
-        let other = &WorkAsset::from_slice(other.glb(), None, None)?;
+        let base = &WorkAsset::from_slice(base.glb(), Some(base.default_tag()), None)?;
+        let other = &WorkAsset::from_slice(other.glb(), Some(other.default_tag()), None)?;
 
         let meld = WorkAsset::meld(base, other)?;
         meld.export()

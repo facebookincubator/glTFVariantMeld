@@ -3,6 +3,18 @@
     "generator": "FBX2glTF",
     "version": "2.0"
   },
+  "extensions": {
+    "KHR_materials_variants": {
+      "variants": [
+        {
+          "name": "tag_1"
+        },
+        {
+          "name": "tag_2"
+        }
+      ]
+    }
+  },
   "extensionsUsed": [
     "KHR_materials_variants"
   ],
@@ -131,9 +143,9 @@
             "KHR_materials_variants": {
               "mapping": [
                 {
-                  "tags": [
-                    "tag_1",
-                    "tag_2"
+                  "variants": [
+                    0,
+                    1
                   ],
                   "material": 0
                 }

@@ -50,21 +50,25 @@ impl<'a> WorkAsset {
         extension::install(&mut root);
 
         // then mutate the clone with our variational state
-        self.export_extension_tag(&mut root)?;
-        let metadata = self.export_variant_mapping(&mut root)?;
+        self.export_variant_root_lookup(&mut root)?;
+
+        let variant_ix_lookup = extension::get_variant_lookup(&root)?;
+
+        // finally write out the tag->material_ix mapping to glTF JSON
+        let metadata = self.export_variant_mapping(&mut root, &variant_ix_lookup)?;
 
         Ok((root, blob, metadata))
     }
 
-    // export our `default_tag` member into glTF form
-    fn export_extension_tag(&self, root: &mut Root) -> Result<()> {
-        extension::set_extension_tag(root, &self.default_tag)
+    fn export_variant_root_lookup(&self, root: &mut Root) -> Result<()> {
+        let tags_in_use = self.get_tags_in_use()?;
+        extension::write_root_variant_lookup_map(root, &tags_in_use)
     }
 
     // export our `mesh_primitive_variants` member into glTF form, by transforming the
     // tag->material_key mapping of each mesh/primitive to a tag->material_ix one, then
     // finally calling the glTF extension code to actually convert it to JSON.
-    fn export_variant_mapping(&self, root: &mut Root) -> Result<Metadata> {
+    fn export_variant_mapping(&self, root: &mut Root, variant_ix_lookup: &HashMap<usize, Tag>) -> Result<Metadata> {
         let mut image_sizer = ImageSizes::new(&self);
 
         // for each mesh...
@@ -126,8 +130,7 @@ impl<'a> WorkAsset {
                     }
                 };
 
-                // finally write out the tag->material_ix mapping to glTF JSON
-                extension::write_variant_map(primitive, &tag_to_ix)?;
+                extension::write_variant_map(primitive, &tag_to_ix, &variant_ix_lookup)?;
             }
         }
 

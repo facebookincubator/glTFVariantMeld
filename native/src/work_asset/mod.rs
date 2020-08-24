@@ -68,6 +68,21 @@ impl WorkAsset {
         &self.blob.as_slice()
     }
 
+    /// Returns a vector of tags being used throughout the entire asset.
+    pub fn get_tags_in_use(&self) -> Result<Vec<Tag>> {
+        let mut tags_in_use: Vec<Tag> = Vec::new();
+        for vec_of_prims in &self.mesh_primitive_variants {
+            for tag_meld_entry in vec_of_prims {
+                for tag in tag_meld_entry.keys() {
+                    if !tags_in_use.contains(tag) {
+                        tags_in_use.push(tag.clone());
+                    }
+                }
+            }
+        };
+        Ok(tags_in_use)
+    }
+
     /// The mapping of `Tag` to material `MeldKey` for a given primitive of a given mesh.
     pub fn variant_mapping(&self, m_ix: usize, p_ix: usize) -> &HashMap<Tag, MeldKey> {
         let mesh_mappings = &self.mesh_primitive_variants[m_ix];
