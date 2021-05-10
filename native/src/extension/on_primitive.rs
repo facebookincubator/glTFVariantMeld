@@ -13,7 +13,7 @@ use crate::{Result, Tag};
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FBMaterialVariantPrimitiveExtension {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub mapping: Vec<FBMaterialVariantPrimitiveEntry>,
+    pub mappings: Vec<FBMaterialVariantPrimitiveEntry>,
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Default, Deserialize, Serialize)]
@@ -73,7 +73,7 @@ pub fn write_variant_map(primitive: &mut Primitive, tag_to_ix: &HashMap<Tag, usi
     mapping_entries.sort_unstable();
     // build structured extension data
     let new_extension = FBMaterialVariantPrimitiveExtension {
-        mapping: mapping_entries,
+        mappings: mapping_entries,
     };
     // serialise to JSON string
     let value = serde_json::to_string(&new_extension)
@@ -108,7 +108,7 @@ pub fn extract_variant_map(primitive: &Primitive, variant_ix_lookup: &HashMap<us
             return match parse {
                 Ok(parse) => {
                     let mut result = HashMap::new();
-                    for entry in parse.mapping {
+                    for entry in parse.mappings {
                         for variant_ix in entry.variants {
                             let key = variant_ix as usize;
                             let variant_tag = &variant_ix_lookup[&key];
