@@ -7,11 +7,14 @@ extern crate gltf_variant_meld;
 
 use std::fs;
 
-use gltf_variant_meld::{Result, VariationalAsset};
+use gltf_variant_meld::VariationalAsset;
 
 mod args;
 use args::parse_args;
 pub use args::{SourceAsset, SourceAssets, WorkOrder};
+
+mod error_handling;
+use error_handling::Result;
 
 fn main() {
     let work_order = parse_args();
@@ -22,20 +25,43 @@ fn main() {
 }
 
 fn process(work_order: WorkOrder) -> Result<()> {
-    let base = read_asset(&work_order.source_assets.base)?;
+    let base = &work_order.source_assets.base;
+    let base_asset = read_asset(base)?;
     if work_order.verbose() {
-        println!("Base asset:");
-        describe_asset(&base);
+        println!(
+            "Parsed base asset [{}]: {:?}",
+            size(base_asset.glb().len()),
+            base.path.file_name()?
+        );
     }
 
-    let mut result = base;
+    let mut result = base_asset;
     for meld in &work_order.source_assets.melds {
-        let meld = read_asset(meld)?;
-        result = VariationalAsset::meld(&result, &meld)?;
+        let meld_asset = read_asset(meld)?;
         if work_order.verbose() {
-            println!("New melded result:");
-            describe_asset(&result);
+            println!();
+            println!(
+                "Melding in asset [{}]: {:?}",
+                size(meld_asset.glb().len()),
+                meld.path.file_name()?
+            );
         }
+        let old_size = result.glb().len();
+        result = VariationalAsset::meld(&result, &meld_asset)?;
+        if work_order.verbose() {
+            let new_size = result.glb().len();
+            println!(
+                "Total post-meld size increase: {}",
+                size(new_size - old_size)
+            );
+        }
+    }
+
+    if work_order.verbose() {
+        println!();
+        println!("Final asset size: {}", size(result.glb().len()));
+        describe_textures(&result)?;
+        println!();
     }
 
     fs::write(&work_order.output_path, result.glb())
@@ -43,9 +69,9 @@ fn process(work_order: WorkOrder) -> Result<()> {
 
     if !work_order.quiet() {
         println!(
-            "Success! {} bytes written to '{}'.",
+            "{} bytes written to '{}'.",
             result.glb().len(),
-            work_order.output_path.to_str().unwrap_or("<error>"),
+            work_order.output_path.to_str()?,
         );
     }
     Ok(())
@@ -58,18 +84,26 @@ fn read_asset(asset: &SourceAsset) -> Result<VariationalAsset> {
     )?)
 }
 
-fn describe_asset(asset: &VariationalAsset) {
-    println!("             Total file size: {}", size(asset.glb().len()));
-    let total = asset.metadata().total_sizes().texture_bytes;
-    let variational = asset.metadata().variational_sizes().texture_bytes;
-    println!("          Total texture data: {}", size(total));
-    println!("  Of which is depends on tag: {}", size(variational));
+fn describe_textures(asset: &VariationalAsset) -> Result<()> {
+    let metadata = asset.metadata();
+    let shared_textures =
+        metadata.total_sizes().texture_bytes() - metadata.variational_sizes().texture_bytes();
+
+    println!("Active variational texture, by tag:");
+    let mut tags: Vec<_> = metadata.tags().iter().collect();
+    tags.sort();
+    for &tag in &tags {
+        let textures_for_tag = metadata.tag_sizes(tag)?.texture_bytes() - shared_textures;
+        println!("{:>30}: {}", format!("[{}]", tag), size(textures_for_tag));
+    }
+    println!("Textures shared by all variants: {}", size(shared_textures));
+    Ok(())
 }
 
 fn size(byte_count: usize) -> String {
     if byte_count < 1000000 {
-        format!("{:.01} kB", byte_count / 1000)
+        format!("{:.01} kB", (byte_count as f64) / 1000.0)
     } else {
-        format!("{:.01} MB", byte_count / 1000000)
+        format!("{:.01} MB", (byte_count as f64) / 1000000.0)
     }
 }
