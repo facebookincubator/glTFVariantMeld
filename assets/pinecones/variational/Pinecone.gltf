@@ -141,7 +141,7 @@
           "indices": 0,
           "extensions": {
             "KHR_materials_variants": {
-              "mapping": [
+              "mappings": [
                 {
                   "variants": [
                     0,
