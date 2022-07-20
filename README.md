@@ -13,10 +13,7 @@ application that lets a prospective customer switch between these different vari
 latency.
 
 We're making this internal tool publicly available with the hope of helping the glTF
-ecosystem come together around a common, open format. In this prerelease version, the tool
-produces files with the Khronos extension
-[`KHR_materials_variants`](https://github.com/KhronosGroup/glTF/pull/1681). We are hopeful
-that the glTF community will find speedy consensus around a ratified extension.
+ecosystem come together around a common, open format.
 
 In this prerelease version, the tool produces files with the Khronos extension [`KHR_materials_variants`](https://github.com/KhronosGroup/glTF/blob/07c109becc3153d0d982d6c2086da7da979ab439/extensions/2.0/Khronos//KHR_materials_variants/README.md). We are hopeful that the glTF community will find speedy consensus around a Khronos extension.
 
@@ -61,7 +58,7 @@ Success! 4594404 bytes written to 'GizmoVariational.glb'.
 ```
 
 The first source file contains 1.8 MB of textures and 0.6 MB of geometry. Subsequent source files
-contribute first another 1.5 MB of textures, and then for the third variant, 1.7 MB. The geometry
+contribute first another 1.5 MB of textures, and then for the third variant, 0.7 MB. The geometry
 of the asset remains constant.
 
 
